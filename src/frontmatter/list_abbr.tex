@@ -1,0 +1,13 @@
+\glsaddall
+
+% Start a new page
+\cleardoublepage
+
+% Add a title without making a chapter
+\section*{LIST OF ABBREVIATIONS} % keeps it small like a section
+\addcontentsline{toc}{section}{LIST OF ABBREVIATIONS} % appears in TOC
+
+\glsaddall
+% Print the glossary entries
+\printglossary[type=\acronymtype,style=long, title={}]
+\clearpage

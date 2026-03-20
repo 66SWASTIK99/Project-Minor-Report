@@ -1,0 +1,59 @@
+\chapter{RESULTS AND ANALYSIS}
+This section presents the results obtained from the implementation and testing of the proposed EEG based Brain Computer Interface system. Due to limitations in hardware availability and time constraints, the system was tested using simulated EEG signals generated through a function generator. The results demonstrate the feasibility of signal acquisition, filtering, and frequency domain analysis using FFT.
+
+\section{EEG Signal Acquisition Result}
+Low-amplitude signals in the microvolt range were applied at the input of the instrumentation amplifier to simulate EEG signals. The AD620 based instrumentation amplifier successfully amplified the input signal without significant distortion. The amplified signal was observed to be stable and suitable for further processing through the filtering stages.
+The result confirms that the amplification stage is capable of handling low-level biopotential signals, which is essential for EEG signal acquisition.
+
+\section{Filtered Signal Analysis}
+The amplified signal was passed through a high pass filter with a cutoff frequency of 0.5 Hz and a low-pass filter with a cutoff frequency of 40 Hz. The high-pass filter effectively removed DC offset and baseline drift, while the low-pass filter suppressed high frequency noise.
+
+\begin{figure}[H]
+	\includegraphics[width=\textwidth]{src/images/figures/frequency_response.png}
+	\caption{Frequency Response of Circuit}
+	\label{frequency_response}
+\end{figure}
+
+\begin{table}[h]
+	\centering
+	\caption{Frequency Response Data}
+	\begin{tabular}{ccc}
+		\toprule
+		Fin & Vout & Gain \\
+		\midrule
+		3	  & 0.136 	& 3.4 \\
+		5	  & 0.288 	& 7.2 \\
+		7	  & 0.424 	& 10.6 \\
+		9	  & 1     	& 25   \\
+		11	  & 2.52  	& 63   \\
+		13	  & 3.4   	& 85   \\
+		15	  & 3.68  	& 92   \\
+		20	  & 3.28  	& 82   \\
+		22	  & 2.48  	& 62   \\
+		24	  & 1.6   	& 40   \\
+		26	  & 1.04  	& 26   \\
+		28	  & 0.72  	& 18   \\
+		30	  & 0.50  	& 12.5 \\
+		\bottomrule
+	\end{tabular}
+\end{table}
+
+50 Hz notch filter was applied to reduce power line interference. The filtered signal showed significant reduction in noise components, resulting in a cleaner waveform suitable for frequency analysis.
+
+\section{Frequency Domain Analysis Using FFT}
+Fast Fourier Transform (FFT) was applied to the filtered signal to convert it from the time domain to the frequency domain. The FFT output clearly displayed dominant frequency components corresponding to the input signal from the function generator.
+
+When the input signal frequency was set within the alpha band range (8–12 Hz), a noticeable peak was observed in the FFT spectrum within this frequency range. This confirms that the system is capable of identifying specific EEG frequency bands using frequency domain analysis.
+
+\section{Alpha Band Detection Result}
+The results showed that when the simulated signal frequency fell within the alpha range, the system successfully detected increased alpha band power. This demonstrates the feasibility of using alpha wave activity as a control parameter for the BCI system.
+
+\section{System Limitation and Current Status}
+At the current stage, real-time EEG data acquisition using electrodes and eye blink detection has not been fully implemented. The system primarily validates the signal processing chain, including amplification, filtering, and FFT based frequency analysis.
+
+Despite these limitations, the obtained results verify the correctness of the circuit design and signal processing approach. The outcomes provide a strong foundation for further development and real-time implementation.
+
+\section{Discussion}
+The results obtained from simulated EEG signals indicate that the proposed system can effectively process low level signals and extract relevant frequency information. The FFT based analysis method proved to be reliable for identifying alpha band activity.
+
+Although the system has not yet been tested with real EEG data, the observed results confirm the feasibility of the proposed design. Future implementation using actual EEG electrodes and real time processing is expected to improve the system’s accuracy and practical applicability.

@@ -1,0 +1,46 @@
+\chapter{LITERATURE REVIEW}
+
+\section{Existing Works}
+Brain computer interfaces (BCIs) are systems which allow communication between a user and a computer using brain signals from user. There are different type of BCI, which use different methods to observe their user's brain activity:
+\begin{itemize}
+	\item \gls{eeg} based, such as this project
+	\item Magnetoencephalography (MEG) based
+	\item Electrocorticography (ECoG) based
+	\item Functional magnetic resonance imaging (fMRI) based
+	\item Near infrared spectroscopy (NIRS) based
+\end{itemize}
+
+EEG is non invasive and measures the electrical activity produced using the brain by electrode placed on the surface of the scalp. EEG will be discussed in greater detail in a later chapter. ECoG is invasive and places the electrodes on the surface of the brain to measure the electrical activity produced. ECoG can give higher temporal and spatial resolution compared to EEG but as it is invasive so is outside the scope of this project. MEG, fMRI and NIRS are all non invasive but were also outside the scope of the project due to the cost equipment but will be discussed briefly. MEG measures the magnetic disturbances caused by neural activity. fMRI applies electromagnetic fields around the head and in BCI systems it typically measures the blood oxygen level dependent (BOLD) during neural activity. Lastly, NIRS uses infrared light when can penetrate the skull by a few centimetres and measures the light reflected. The light reflected which varies depending on the oxyhemoglobin and deoxyhemoglobin concentrations. All of the above descriptions can be found in more detail in \cite{nicolas2012bci}.
+
+\section{EEG Based BCI}
+Returning to EEG based BCIs, various EEG signals have been used to control a computer such as visually evoked potentials (VEP), slow cortical potentials (SCPs), P300 evoked potentials and sensorimotor rhythms (SMR). BCIs are more commonly based on VEPs and SMRs and will be discussed below. 
+
+VEPs are electrical responses in the occipital lobe (back of the head), produced as a direct response to a visual stimulus. A fixed frequency flashing stimulus causes an ongoing oscillatory VEP, which is referred to as a steady state visually evoked potential (SSVEP). This project focuses on an non VEP based BCI. An example of an SSVEP based BCI is the QWERTY style LED keyboard created by H. Yuan and B. He, "Brain Computer Interfaces Using Sensorimotor Rhythms: Current State and Future Perspectives” \cite{hwang2012ssvep}. Each key on the keyboard has an LED behind it, flashing at a different frequency and the key the user is looking at can be discerned from looking at the FFT of the user occipital EEG.
+
+\begin{figure}
+	\centering
+	\includegraphics[width = 14cm]{src/images/figures/frequency_stimulus.png}
+\caption{\centering An example of the stimulation frequency arrangements (Image from H. Han Jeong \cite{hwang2012ssvep})}
+\end{figure}
+
+\section{Brain Waves and Their Relevance to the Proposed BCI System}
+Electroencephalography (EEG) records the electrical activity of the brain in the form of brain waves, which are classified into distinct frequency bands, each reflecting specific mental and physiological states. Delta waves (0.1–3 Hz) are the slowest and are primarily observed during deep, dreamless sleep or unconscious states. Theta waves (4–7 Hz) are associated with creativity, imagination, memory recall, and light sleep or dreaming states, often reflecting a relaxed yet internally focused mind. Alpha waves (8–12 Hz) occur when a person is awake but relaxed, typically increasing when eyes are closed and diminishing during concentration. Low Beta waves (12–15 Hz) correspond to relaxed yet focused mental activity, while Midrange Beta waves (16–20 Hz) reflect active thinking, problem solving, and high awareness of the surroundings. High Beta waves (21–30 Hz) are linked to intense alertness, stress, or agitation, whereas Gamma waves (30–100 Hz) are related to higher level cognitive functions, such as information processing, learning, and memory integration. In the context of the proposed brain–computer interface (BCI) system, alpha waves are the primary focus for control, as they exhibit clear and measurable changes between relaxed and focused states, allowing reliable and simple EEG based interaction. While the system does not directly use other frequency bands for control, understanding the full spectrum of EEG activity is essential for filtering noise, identifying artifacts, and ensuring accurate detection of alpha and beta activity, thereby enhancing the overall performance of the BCI system.
+
+\newpage
+\begin{table}
+	\centering
+	\caption{\centering EEG frequency bands and associated mental states-Image Source: M.G.N.Garcia et al \cite{malmivuo1995bioelectromagnetism})}
+	\includegraphics[width = 14cm]{src/images/figures/eeg_frequency_bands.png}
+\end{table}
+
+\vspace{10pt}
+\section{Electroencephalography}
+An EEG, or electroencephalogram, is a machine that can measure the tiny electrical signals our brain makes. We put small electrodes on the scalp to record these signals. People use EEGs for many things like checking if someone is awake, seeing how they react to things around them, or finding sleep and brain problems. Lately, scientists started using EEG signals to control computers, which is called a BCI system \cite{vidal1973bci}.
+
+The signals an EEG picks up depend on where the electrodes are placed and what the brain is doing at that moment. This is because different parts of the brain do different jobs. The most common way to put the electrodes on the head is called the 10-20 system \cite{malmivuo1995bioelectromagnetism}.
+
+\begin{figure}
+	\centering
+	\includegraphics[width = 14cm]{src/images/figures/electrode_placement.png}
+	\caption{\centering An example of the stimulation frequency arrangements (Image from H. Han Jeong \cite{hwang2012ssvep})}
+\end{figure}

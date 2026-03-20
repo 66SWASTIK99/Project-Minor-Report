@@ -1,0 +1,235 @@
+\chapter{SYSTEM ARCHITECTURE AND METHODOLOGY}
+
+\section{System Block Diagram/Architecture}
+\vspace{20pt}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width = 14.5cm, height=19.5cm]{src/images/figures/system_architecture.png}
+\caption{System Block Diagram of the Brain Computer Typing Interface}
+\label{system_block_diagram}
+\end{figure}
+
+\newpage
+\section{Description of Working Principle}
+The Brain Computer Interface (BCI) system detects, amplifies, filters, and interprets brain electrical activity to control external devices. Electrodes placed on the scalp capture EEG signals. The weak EEG signals are amplified using an Instrumentation Amplifier (AD620), which boosts the signal while rejecting noise. The amplified signals then pass through a Butterworth band pass filter, which isolates the desired frequency range and removes artifacts and muscle activity.
+
+The filtered signals are converted to digital form using the Arduino’s ADC ports. Software algorithms analyze the signal frequencies to determine which visual stimulus the user is focusing on, allowing control of external devices.
+This system effectively translates brain activity into commands with high sensitivity, low noise, and minimal interference.
+
+More precisely, EEG electrodes are placed on the scalp at frontal and occipital regions to capture signals related to eye blinks and brain activity. A large voltage change appears in the EEG signal when the user performs an intentional eye blink. The proposed BCI typing system works by detecting eye blinks and changes in alpha wave activity from EEG signals to control a typing or selection interface but alpha wave activity varies depending on the user’s level of focus or relaxation and is mainly observed in the occipital region of the brain.
+
+The EEG signals collected from the electrodes are first amplified and conditioned using an analog front end circuit then these signals are passed through analog filters including high pass, low pass and notch filters, to remove unwanted noise, baseline drift and power line interference. Then the clean EEG signals are converted into digital form using an analog to digital converter.
+
+In the digital stage, the system stores the sampled EEG data in short time windows. Eye blinks are detected directly from the time domain signal using amplitude thresholding techniques and based on predefined thresholds, the system determines whether the user is focused or relaxed. For alpha wave analysis, Fast Fourier Transform (FFT) is applied to the observed EEG data to calculate the power in the alpha frequency band (8–12 Hz). If blink and alpha states are detected then it is processed by a rule based decision logic, which translates them into typing or selection actions on the user interface.
+
+\newpage
+\section{Flowchart of Proposed System Architecture}
+\vspace{18pt}
+\begin{figure}[H]
+	\includegraphics[width = 14cm, height = 21.5cm]{src/images/figures/flowchart.png}
+	\vspace{10pt}
+	\caption{Flowchart of Proposed System Architecture}
+	\label{flowchart}
+\end{figure}
+
+\newpage
+This flowchart illustrates the operation of the proposed EEG-based BCI system. The system acquires EEG signals, amplifies them using an instrumentation amplifier, and removes unwanted noise and power-line interference through filtering. FFT is then applied to extract relevant features. Based on these features, the system first checks for blink detection to execute a blink command; if no blink is detected, it evaluates beta-band power to determine focus and execute the corresponding focus command, after which the process ends.
+
+\section{EEG Electrode Placement and Signal Acquisition}
+The human brain consists of billions of neurons that communicate with each other using electrical impulses. When a group of neurons becomes active simultaneously such as during thinking, eye blinking, or movement small electrical potentials are generated due to ionic current flow across neuronal cell membranes. These electrical activities create voltage fluctuations that spread through the brain tissues, skull, and scalp.
+
+EEG electrodes are conductive sensors placed on the scalp that detect these tiny voltage changes. They do not read signals from a single neuron; instead, they capture the combined electrical activity of thousands or millions of neurons located beneath the electrode. Since the skull has high resistance and attenuates the signal, the detected EEG voltages are very small, typically in the range of microvolts (µV).
+
+Each EEG measurement is taken as a potential difference between two electrodes: an active (measuring) electrode and a reference electrode. A third electrode, called the ground electrode, is used to reduce noise and stabilize the signal. When brain activity changes, the voltage difference between the active and reference electrodes also changes, and this variation represents the EEG signal.
+
+To ensure proper signal acquisition, electrodes are usually placed using conductive gel or saline solution to reduce skin electrode impedance. To capture the beta waves one electrode is placed in the Fpz position according to the 10-20 system and another electrode is placed at the A1 position which is the earlobe that is used as reference as there is little brain activity in the earlobes. The captured signal is then passed to an instrumentation amplifier, where it is amplified and prepared for filtering and further processing in the BCI system.
+
+\newpage
+\section{Instrumentation Amplifier (AD620) Design and Implementation}
+In our system, the AD620 instrumentation amplifier operates by amplifying the differential voltage between the scalp electrode and  the reference electrode while rejecting common unwanted signals. The two input pins of the AD620 are connected to the active and reference EEG electrodes. These electrodes pick up both the desired brain signal and unwanted noise such as ac power outlet interference (50 Hz) and motion artifacts. Since most of this noise appears equally on both electrodes, it is classified as common mode noise.
+
+Inside the AD620, the input stage consists of two matched input amplifiers with very high input impedance. This prevents current from being drawn from the electrodes, ensuring that the extremely weak EEG signals are not distorted or attenuated. These two input amplifiers amplify the incoming signals equally, preserving the small voltage difference generated by brain activity.
+
+The core principle of the AD620 is differential amplification. The amplifier subtracts the voltage at one input from the other and then amplifies only this difference. As a result, signals that are common to both inputs such as 50 Hz power line noise are effectively cancelled due to the AD620’s high Common Mode Rejection Ratio (CMRR), while the EEG signal is amplified.
+
+The gain of the AD620 is set using a single resistor (Rg) connected between the inverting terminal. This resistor controls how much the tiny EEG voltage (typically in microvolts) is amplified to a level suitable for further processing. In our BCI project, the gain is chosen so that the EEG signal is amplified without saturation while still being large enough for filtering and ADC conversion.
+
+AD620 achieves high common mode rejection by using matched resistors. It uses highly precise resistors which cannot be achieved by regular manufacturing processes. The resistors used here are precisely matched due to laser wafer trimming technique. The resistors used in input stage has resistance of \SI{24.7}{\kilo\ohm} which results into the gain equation of 
+
+$$G = \frac{2x\SI{24.7}{\kilo\ohm}}{R_g} + 1$$
+\begin{equation}
+	G = \frac{\SI{49.4}{\kilo\ohm}}{R_g} + 1
+\end{equation}
+\begin{equation}
+	R_g = \frac{\SI{49.4}{\kilo\ohm}}{G-1}
+\end{equation}
+
+Finally, the amplified output signal from the AD620 is referenced to a stable reference ground voltage and sent to the next stage band pass filter and notch filter, before entering the microcontroller’s ADC. In this way, the AD620 acts as the first and most critical signal conditioning stage, ensuring that clean, amplified EEG signals are available for reliable blink detection and FFT analysis.
+
+\section{Filter Design and Signal Conditioning}
+\subsection{Bandpass filter}
+In our project, the band pass filter is used to isolate the useful EEG frequency components while removing unwanted low frequency drift and high frequency noise. After the EEG signal is amplified by the AD620 instrumentation amplifier, it still contains various undesired components such as DC offset, baseline drift, muscle noise (EMG), and high frequency electrical interference. The bandpass filter is therefore applied as the next signal conditioning stage.
+
+The band pass filter operates by allowing only a specific range of frequencies to pass through while attenuating frequencies outside this range. In our project, the lower cutoff frequency is chosen to remove very low frequency components such as electrode drift and motion artifacts, while the upper cutoff frequency is selected to suppress high frequency noise such as muscle activity and electronic noise. As a result, only EEG related frequency components particularly those associated with eye blinks and brain activity are preserved.
+
+Practically, the bandpass filter is implemented by cascading a highpass filter and a low pass filter. The high pass filter blocks DC and very slow variations, whereas the low pass filter blocks fast, unwanted fluctuations. Together, they ensure that the amplified EEG signal lies within a clean and controlled frequency band suitable for digitization. This filtered signal is then fed into the microcontroller’s ADC for sampling.
+
+We used a 6th order Butterworth band pass filter with a passband of 10–35 Hz to effectively isolate EEG components relevant to eye blink and intentional brain activity while suppressing noise. The 10 Hz lower cutoff removes low frequency artifacts such as baseline drift, electrode motion, and DC offset. The 35 Hz upper cutoff eliminates high frequency noise, including muscle (EMG) activity and electronic interference. A Butterworth filter is chosen because it provides a maximally flat response in the passband, preserving EEG signal shape. The 6th order ensures a steep roll off, giving better noise rejection and cleaner signals for accurate FFT analysis and blink detection.pass filter, the system ensures that the microcontroller processes only meaningful EEG data, improving the accuracy of eye blink detection and FFT based frequency analysis. This filtering stage reduces computational load, prevents ADC saturation, and enhances the overall reliability of the BCI system.
+
+\begin{figure}[H]
+	\includegraphics[width=14cm]{src/images/figures/6th_butterworth.png}
+	\caption{6th-order Butterworth band pass filter’s frequency response}
+	\label{bandpass}
+\end{figure}
+
+\subsection{Notch Filter}
+In our EEG based BCI project, a notch filter is used to remove power line interference, which appears as a strong sinusoidal noise at 50 Hz (in Nepal). This interference is picked up by the EEG electrodes due to electromagnetic coupling from 
+nearby electrical equipment and wiring.
+ 
+The notch filter is designed with a very narrow stopband centered at 50 Hz. It works by strongly attenuating signals at this specific frequency while allowing all other frequencies to pass with minimal effect. When the amplified EEG signal passes 
+through the notch filter, the 50 Hz component is significantly reduced, while the useful EEG frequencies remain intact. 
+
+By eliminating power line noise, the notch filter improves signal clarity and prevents 
+false peaks in FFT analysis, leading to more accurate eye blink detection and reliable 
+BCI performance.
+
+\begin{figure}[H]
+	\includegraphics[width=14cm]{src/images/figures/50hz_notch.png}
+	\caption{50 Hz Notch Filter frequency response}
+	\label{notch}
+\end{figure}
+
+\section{Microcontroller Based Data Acquisition and Communication}
+The microcontroller based data acquisition stage is responsible for converting the conditioned analog EEG signal into a digital form suitable for realtime processing. 
+After passing through the instrumentation amplifier and analog filtering stages, the EEG signal contains the frequency components of interest but remains a continuous time voltage. This signal is then applied to the microcontroller’s built in analog to digital converter (ADC), which samples the signal at uniform time intervals and converts it into a sequence of digital values. Prior to digitization, the signal is level 
+shifted to a mid supply reference voltage to ensure compatibility with the single supply ADC input range and to prevent clipping of negative voltage components.
+
+\subsection{Analog to Digital Converter (ADC)}
+After the EEG signal is amplified and filtered, it is still an analog signal, meaning it is a continuous voltage that varies with time. However, our microcontroller and signal 
+processing algorithms (like FFT) can only work with digital data. Therefore, the signal must be converted from analog to digital, which is done using an Analog to Digital Converter (ADC). 
+
+The filtered EEG signal (in microvolts, now amplified to millivolts/volts) is fed to the ADC input of the microcontroller. The ADC samples the EEG signal at a fixed 
+sampling frequency (e.g., 250 Hz or 500 Hz), which is sufficient to capture EEG frequencies (0.5 – 40 Hz). Instead of a continuous waveform, we now have discrete time voltage values. 
+
+The ADC used by our microcontroller is Successive Approximation ADC. SAR ADC is a type of analog to digital converter that converges digital value towards input signal after every iteration by binary search. Here the search is done by comparing the current digital value in register with input value via DAC and makes a decision to step up or step down the digital value depending on the result of comparision. The digital value is updated from most significant bit to least significant bit. 
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width = 13.5cm, height=7.5cm]{src/images/figures/sar3.png}
+\caption{Flowchart of Proposed System Architecture}
+\label{SAR}
+\end{figure}
+
+\section{Arduino Timer Specifications}
+
+Arduino boards, such as the Arduino Uno, feature built-in hardware timers that provide precise time measurement, event counting, and pulse generation. The key specifications of these timers are as follows:
+
+\begin{itemize}
+	\item \textbf{Timer Types:}
+	\begin{itemize}
+		\item 8-bit timers: Timer0, Timer2
+		\item 16-bit timer: Timer1
+	\end{itemize}
+	
+	\item \textbf{Modes of Operation:}
+	\begin{itemize}
+		\item Normal mode (simple counting)
+		\item CTC (Clear Timer on Compare Match) mode
+		\item PWM (Pulse Width Modulation) modes
+	\end{itemize}
+	
+	\item \textbf{Clock Source:}  
+	Each timer increments based on the system clock (16 MHz on Arduino Uno), optionally divided by a configurable prescaler (1, 8, 64, 256, 1024), allowing flexible timing intervals.
+	
+	\item \textbf{Interrupt Capabilities:}  
+	Timers can generate interrupts on compare match, overflow, or external events, enabling precise periodic execution of code.
+	
+	\item \textbf{Resolution:}
+	\begin{itemize}
+		\item 8-bit timers: counts from 0 to 255
+		\item 16-bit timer: counts from 0 to 65535
+	\end{itemize}
+	
+	\item \textbf{Applications:}
+	\begin{itemize}
+		\item Generating precise delays and periodic signals
+		\item Measuring time intervals
+		\item Counting external pulses or events
+		\item Producing PWM signals for motor and LED control
+	\end{itemize}
+\end{itemize}
+
+\noindent These timers act as hardware counters, providing high accuracy and reliability for time sensitive tasks without relying on software delays.
+
+
+\section{Frequency Domain Analysis Using Fast Fourier Transform (FFT)}
+The digital data is now ready for processing. But the signal is in time domain i.e the signal shows voltage vs time. Brain rhythms (alpha, beta, etc.) are hidden inside the signal. So, the problem is, from the time domain signal alone, we cannot clearly separate brain waves by frequency. For that we need to convert the EEG signals from time domain to frequency domain. And a fourier transform allows us to do that. 
+
+$$F(\omega) = \int_{-\infty}^{\infty} x(t)\, e^{-j \omega t} \, dt$$
+where:\\
+x(t): The original function or signal in the time domain.\\
+$F(\omega)$: The transformed function in the frequency domain.\\
+$\omega$: Angular frequency.\\
+$e^{-j \omega t}$: A complex exponent representing sinusoidal components.
+\section{Discrete Fourier Transform (DFT) and Fast Fourier Transform (FFT)}
+The sampled data is discrete, not continuous. And that is why we use discrete fourier transform since the regular fourier transform is for continuous signals. The Discrete Fourier Transform (DFT) is used to convert our discrete time signal from the time domain into its frequency domain representation. It directly computes the frequency components using the DFT formula and requires a large number of computations. For an N point signal, DFT requires $O(N^2)$ complex multiplications, which makes it computationally slow for large data sets.\\The DFT of x[n] is mathematically defined as\\
+\begin{equation}
+	X[k] = \sum_{n=0}^{N-1} x[n]\; e^{-j \frac{2\pi k n}{N}},\\
+	\quad k = 0,1,2,\ldots, N-1
+\end{equation}
+where,\\
+k: index for output frequency component\\
+X[k]: the complex frequency domain coefficient corresponding to the k-th frequency\\
+N: total number of samples \\
+n: the index for sample ranging from 0 to N-1 
+x[n]:  n-th sample\\
+
+The Fast Fourier Transform (FFT) is not a different transform but an efficient algorithm used to compute the Discrete Fourier Transform (DFT). FFT exploits the symmetry and periodicity properties of the DFT to reduce the number of calculations. Using FFT, the computational complexity is reduced from $O(N^2)$ to $O(N \log N)$, making it much faster and suitable for real-time signal processing applications such as EEG, ECG, image processing, and communication systems.
+
+FFT computes frequency components efficiently with a computational complexity of $O(N \log N)$, making it suitable for real-time EEG processing. The magnitude of the FFT output, $|X[k]|$ or the power spectrum $|X[k]|^2$, indicates the strength of each frequency component present in the EEG signal. By analyzing the power distribution across frequency bands such as the alpha frequency band (8--13 Hz), the presence and intensity of specific brain rhythms can be identified. Thus, FFT transforms the time-domain EEG signal into a frequency-domain representation, enabling reliable detection and analysis of brain activity patterns that are essential for EEG-based signal processing.
+
+\section{Windowing -- Hann Window}
+
+When performing a Fourier transform, the signal taken for sampling is finite, with no guarantee of perfect start and end points of the waveform, which causes inaccuracies in frequency analysis. Due to this, spectral energy from high-energy frequencies spreads into neighboring frequencies. This phenomenon is known as spectral leakage.
+
+Although spectral leakage cannot be completely eliminated, it can be reduced using windowing techniques. Windowing reduces spectral leakage by smoothing the signal at its boundaries before transforming it from the time domain to the frequency domain.
+
+In this project, the Hann window is used to reduce spectral leakage before transforming the EEG signal. The Hann window smooths abrupt signal transitions by gradually reducing the signal amplitude to zero at the edges, making it suitable for EEG frequency analysis. The Hann window is defined as:
+\[
+w(n) = \frac{1}{2}\left(1 - \cos\left(\frac{2\pi n}{N-1}\right)\right), \quad n = 0, 1, 2, \ldots, N-1
+\]
+
+\begin{figure}[H]
+	\includegraphics[width=14cm]{src/images/figures/hann.png}
+	\caption{Hann Window}
+	\label{hann}
+\end{figure}
+
+\begin{figure}[H]
+	\includegraphics[width=14cm]{src/images/figures/discontinuous_wave.png}
+	\caption{Discontinuous wave during window transition}
+	\label{discontinuous}
+\end{figure}
+
+\begin{figure}[H]
+	\includegraphics[width=14cm]{src/images/figures/continuity_hann.png}
+	\caption{Continuity due to Hann window application on \ref{discontinuous}}
+	\label{hann_continuous}
+\end{figure}
+
+\section{Processing After Fast Fourier Transform (FFT)}
+
+After applying the Fast Fourier Transform, the digitized EEG signal is converted from the time domain into the frequency domain. The FFT output provides information about the distribution of signal power across different frequency components. The magnitude of each frequency bin is calculated from the real and imaginary parts of the FFT output, representing the strength of EEG activity at corresponding frequencies.
+
+Relevant frequency-domain features are extracted by analyzing power within predefined frequency bands. Eye blink activity is characterized by low-frequency, high-amplitude components, whereas focused mental states show increased power in higher frequency bands, particularly the beta band (approximately 13--30 Hz). The system computes band-wise power values, which serve as features for classification.
+
+These extracted features are compared with predefined threshold values within the microcontroller. If the blink-related frequency power exceeds the blink threshold, the system identifies the signal as a blink. Similarly, if the focus-related frequency power exceeds the focus threshold, the system detects a focused state. Based on this decision, appropriate control actions are generated: a blink command is used to traverse between keys, while a focus command is used to select the desired key.
+
+\chapter{EXPECTED OUTCOME}
+
+The expected outcome of this project is the successful development of a basic EEG-based brain--computer interface (BCI) typing or text selection system using eye blink detection and alpha wave analysis. The system is expected to reliably acquire EEG signals using low-cost electrodes and analog filtering circuits. Eye blinks should be clearly detected as intentional control events, while alpha wave activity should be measurable using FFT-based spectral analysis.
+
+The system is expected to operate in near real-time with minimal latency between EEG signal acquisition and user response. Proper use of band-pass and notch filters should significantly reduce noise, motion artifacts, and power-line interference, thereby improving overall signal quality. The eye blink detection mechanism should demonstrate acceptable accuracy and reliability with minimal false triggering, ensuring stable and consistent system performance.
+
+This project aims to demonstrate simple signal processing techniques and threshold-based decision logic to control a typing interface without reliance on complex machine learning or advanced classification methods. In addition, the project provides practical experience in EEG signal acquisition, analog filtering, digital signal processing, and system integration. Overall, the system serves as a functional proof of concept for low-cost BCI applications and fulfills educational objectives.
+

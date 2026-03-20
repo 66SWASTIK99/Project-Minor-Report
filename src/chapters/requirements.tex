@@ -1,0 +1,75 @@
+\chapter{REQUIREMENTS ANALYSIS}
+\label{chap:requirements}
+
+\section{Biopotential Electrodes}
+Biopotential electrodes are used to measure small electrical signals produced inside the human body. These signals come from active cells such as brain cells and muscle cells. In EEG systems, two electrodes are used for each channel to measure the changing voltage on the scalp. This can be done by measuring the voltage between two points on the head, called bipolar configuration, or between one point on the head and a reference point like the ear, called unipolar configuration \cite{malmivuo1995bioelectromagnetism}.
+
+Biopotential electrodes are mainly divided into two types: wet electrodes and dry electrodes. Wet EEG electrodes are usually small cup shaped electrodes filled with conductive gel. The gel helps the electrode make good contact with the scalp, even through hair. Dry electrodes do not use gel. Instead, they have small teeth like structures that pass through the hair and touch the scalp directly.
+
+Wet electrodes can become uncomfortable if used for a long time because the gel can dry out and needs to be cleaned properly. When the gel dries, the signal quality becomes poor and the skin may feel irritated. Dry electrodes are generally more comfortable and easier to use because they do not require gel. However, they are more affected by body movement and usually have higher resistance between the skin and the electrode \cite{saab2011drywet}.
+
+\begin{figure}[htbp]
+	\centering
+	\begin{subfigure}[b]{0.45\textwidth}
+		\includegraphics[width=\textwidth]{src/images/figures/wet_cup_electrodes.png}
+		\caption{\centering Wet EEG cup electrodes - Images from Kandel Medical\cite{biomedical2018electrodes}}
+		\label{fig:sub1}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.45\textwidth}
+		\includegraphics[width=\textwidth]{src/images/figures/dry_eeg_electrodes.png}
+		\caption{\centering Dry Electrode Electrodes - Image from Guger Technologies \cite{biomedical2018electrodes}}
+		\label{fig:sub2}
+	\end{subfigure}
+	\caption{Biopotential Electrodes}
+	\label{fig:combined}
+\end{figure}
+
+EEG electrodes can also be made from different materials, such as silver/silver chloride, gold, silver, stainless steel, and tin. Reusable EEG electrodes are often expensive and can cost ten dollars or more per electrode \cite{biomedical2018electrodes}. To reduce the overall cost of the project, low cost and homemade electrodes were used.
+
+Another way to classify EEG electrodes is as active or passive. Active electrodes include a small amplifier near the electrode itself. This helps reduce noise caused by poor contact with the skin and movement of wires \cite{gtec2018comparison}. Passive electrodes do not have this amplifier and are connected directly to the bio signal amplifier using long wires.
+
+
+\section{Instrumentation Amplifier}
+An instrumentation amplifier is used to amplify very small EEG signals obtained from the scalp electrodes. Brain signals are very weak and cannot be directly processed by filters or other circuits. Therefore, an instrumentation amplifier is used as the first stage of signal conditioning in this project.
+
+In this system, the AD620 instrumentation amplifier is used because it is specially designed for low level bio potential signal amplification such as EEG. AD620 has high
+input impedance, which prevents loading of the electrodes and helps maintain signal quality. It also has high common mode rejection, which reduces unwanted noise such as power line interference and motion related noise.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width = 14cm]{src/images/figures/ad620_schematic.png}
+	\caption{\centering Simplified Schematic of AD620 Source: \cite{ad620datasheet}}
+\end{figure}
+
+The gain of AD620 can be easily adjusted using a single external resistor, which makes the circuit simple and flexible. AD620 also has low noise, low power
+consumption, and stable performance, making it suitable for continuous EEG signal acquisition.
+
+By using the AD620 instrumentation amplifier, the small voltage difference between EEG electrodes is amplified accurately while rejecting common noise signals. This
+improves signal clarity and makes the EEG signal suitable for further filtering and processing in the Brain Computer Interface system.
+
+\section{Types of Filters}
+Filters are used in the EEG system to remove unwanted noise and keep only the useful brain signals. EEG signals are very small and easily affected by noise such as power line interference, muscle movement, and other electrical disturbances. Therefore, filters are an important part of signal conditioning.
+
+In this project, a band pass filter is used. The band pass filter allows only the required EEG frequency range to pass while blocking very low and very high frequencies. This helps remove slow drift noise and high frequency noise from the signal.
+
+A low pass filter is used to remove high frequency noise such as muscle activity and external electrical interference. This makes the EEG signal smoother and easier to analyze.
+
+A high pass filter is used to remove very low frequency noise caused by body movement and baseline drift. This helps stabilize the signal and improves signal clarity.
+
+A notch filter is used to remove power line interference at 50 Hz. This is important because electrical noise from power supply lines can strongly affect EEG signals.
+
+In this project, simple analog filters are used because they are easy to design and suitable for low cost systems. These filters provide sufficient noise reduction for detecting eye blink and basic EEG frequency bands without using complex signal processing techniques.
+
+\section{Arduino Microcontroller}
+Once the EEG signal is digitized, the microcontroller stores the sampled data in memory and processes it in short time windows. Basic signal processing operations such as amplitude thresholding are applied in the time domain to detect eye blink events. For frequency domain analysis, the microcontroller executes the Fast Fourier Transform (FFT) algorithm on the digital EEG data to analyze the spectral content of the signal. Since eye blinks produce strong low frequency components, the microcontroller identifies these patterns by examining the FFT output or power spectrum.
+
+After detecting valid brain or eye blink commands, the microcontroller makes decisions based on predefined logic and generates appropriate output signals. These outputs may be used to control external devices such as a cursor, virtual keyboard, or indicator LEDs. Additionally, the microcontroller handles data communication with a computer or display module, enabling visualization and further analysis of EEG signals. Thus, the microcontroller plays a crucial role in data acquisition, signal processing, decision making, and system control in the BCI project.
+
+\section{FFT and MATLAB (Signal Processing and Visualization)}
+Fast Fourier Transform (FFT) is used in this project to convert EEG signals from the time domain to the frequency domain. Frequency domain analysis is required to identify and extract specific EEG frequency bands, particularly the alpha band (8–12 Hz), which is associated with relaxation and attention states.
+
+The EEG data received from Arduino is processed in MATLAB, where FFT is applied to calculate the power spectral density of the signal. Based on the magnitude of alpha band activity, the system determines the user’s mental state.
+
+MATLAB plotting functions are used to visualize time domain EEG signals and frequency spectra, which helps in analyzing system performance and validating the effectiveness of signal processing techniques. MATLAB provides a flexible and efficient environment for implementing FFT and EEG data visualization.
+

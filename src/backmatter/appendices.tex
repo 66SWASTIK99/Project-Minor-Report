@@ -1,0 +1,238 @@
+\chapter{APPENDICES}
+
+\section{Project Schedule}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\textwidth]{src/images/figures/gantt_chart.png}
+	\caption{Project Gantt Chart}
+	\label{gantt_chart}
+\end{figure}
+\newpage
+
+\section{Budget Estimation}
+\begin{table}[H]
+	\centering
+	\caption{Bill of Materials for EEG Acquisition Module}
+	\begin{tabular}{p{7.5cm}ccc}
+		\toprule
+		\textbf{Component} & \textbf{Qty} & \textbf{Unit Cost} & \textbf{Total Cost} \\
+		\midrule
+		Arduino Uno                         & 1 & 1000 & 1000 \\
+		AD620 Instrumentation Amplifier Module  & 1 & 700  & 700  \\
+		LM741 Op-Amp IC                     & 3 & 40   & 120  \\
+		10~nF Capacitors                    & 5 & 10   & 50   \\
+		22~nF Capacitors                    & 5 & 10   & 50   \\
+		47~nF Capacitors                    & 5 & 10   & 50   \\
+		100~nF Capacitors                   & 5 & 10   & 50   \\
+		Resistor Box (Bundle of Resistors)                       & 1 & 175  & 175  \\
+		Gold Cup EEG Electrodes             & 2 & 700  & 1400 \\
+		12~V Power Supply                   & 1 & 200  & 200  \\
+		Miscellaneous\textsuperscript{*}   &   &      & 1000 \\
+		\midrule
+		\multicolumn{3}{r}{\textbf{Total}} & \textbf{4795} \\
+		\bottomrule
+	\end{tabular}
+	\label{bill_of_materials}
+\end{table}
+
+\newpage
+\section{Circuit Diagram}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\textwidth]{src/images/figures/ad620.png}
+	\caption{AD620 (Instrumentation Amplifier)}
+	\label{ina}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=20cm, height=7.5cm, angle = 90]{src/images/figures/filter_stage.png}
+	\caption{6th order butterworth filter using lm741}
+	\label{filter_circuit}
+\end{figure}
+
+
+\newpage
+\section{Module Specifications}
+
+\subsection{EEG Signal Acquisition Module}
+\begin{table}[H]
+	\centering
+	\small
+	\caption{EEG Signal Acquisition Module}
+	\begin{tabular}{p{6.5cm}p{6.5cm}ccc}
+		\toprule
+		\textbf{Parameter}                  & \textbf{Specification}   							\\
+		\midrule
+		Signal Type                     	& Electroencephalogram (EEG)						\\
+		Number of Electrodes                & 3 (Fp1, Fp2, Reference)     						\\
+		Electrode Type						& Ag/AgCl Surface Electrodes 						\\
+		Input Signal Amplitude				& \SI{10}{\micro\volt} - \SI{100}{\micro\volt} 		\\
+		Frequency 							& 0.5Hz - 40Hz 										\\
+		Mode of Acquisition 				& Non invasive				 						\\
+		\bottomrule
+	\end{tabular}
+	\label{eeg_signal_acq_module}
+\end{table}
+
+
+\subsection{Instrumentation Amplifier Module (AD620)}
+\begin{table}[H]
+	\centering
+	\small
+	\caption{Instrumentation Amplifier Module (AD620)}
+	\begin{tabular}{p{6.5cm}p{6.5cm}}
+		\toprule
+		\textbf{Parameter} & \textbf{Specification} \\
+		\midrule
+		IC Used & AD620 \\
+		Input Impedance & $\geq$ \SI{10}{\giga\ohm} \\
+		CMRR & > 100 dB \\
+		Gain Equation & \( G = 1 + \frac{49.4~\text{k}\Omega}{R_g} \) \\
+		Supply Voltage & ±9 V \\
+		Application & Low-level biopotential amplification \\
+		\bottomrule
+	\end{tabular}
+\end{table}
+
+\subsection{Signal Conditioning Module (Filters)}
+\begin{table}[H]
+	\centering
+	\small
+	\caption{Signal Conditioning Module (Filters)}
+	\begin{tabular}{p{6.5cm}p{6.5cm}}
+		\toprule
+		\textbf{Filter Type} & \textbf{Specification} \\
+		\midrule
+		High-Pass Filter & Cut-off frequency = \SI{10}{\hertz} \\
+		Low-Pass Filter & Cut-off frequency = \SI{40}{\hertz} \\
+		Notch Filter & Center frequency = \SI{50}{\hertz} \\
+		Filter Order & Second order \\
+		Purpose & Noise and artifact removal \\
+		\bottomrule
+	\end{tabular}
+\end{table}
+
+\subsection{Data Acquisition and Processing Module Specifications}
+\begin{table}[H]
+	\centering
+	\small
+	\caption{Data Acquisition and Processing Module Specifications}
+	\begin{tabular}{p{6.5cm}p{6.5cm}}
+		\toprule
+		\textbf{Parameter} & \textbf{Specification} \\
+		\midrule
+		Microcontroller & Arduino Uno \\
+		ADC Resolution & 10-bit \\
+		Sampling Frequency & \SI{256}{\hertz} - \SI{1024}{\hertz} \\
+		Input Voltage Range & 0 – 5 V \\
+		Communication & USB Serial \\
+		\bottomrule
+	\end{tabular}
+\end{table}
+
+\subsection{EEG Signal Processing Module Specifications}
+\begin{table}[H]
+	\centering
+	\caption{EEG Signal Processing Module Specifications}
+	\begin{tabular}{p{5.5cm}p{8cm}}
+		\toprule
+		\textbf{Parameter} & \textbf{Specification} \\
+		\midrule
+		Programming Language & MATLAB \\
+		Signal Processing & FFT based frequency analysis \\
+		EEG Bands Analyzed & Beta Waves (10-30 Hz) \\
+		Blink Detection & Amplitude threshold based \\
+		Output & Text selection control \\
+		\bottomrule
+	\end{tabular}
+	\label{tab:eeg_signal_processing}
+\end{table}
+
+\newpage
+\section{Code Snippets:}
+\lstdefinestyle{ArduinoStyle}{
+	backgroundcolor=\color{white},   % white background for printing
+	basicstyle=\ttfamily\footnotesize,
+	keywordstyle=\color{codeblue}\bfseries,
+	commentstyle=\color{codegreen}\itshape,
+	stringstyle=\color{red},
+	numbers=left,
+	numberstyle=\tiny\color{codegray},
+	stepnumber=1,
+	numbersep=5pt,
+	showstringspaces=false,
+	breaklines=true,
+	frame=none,
+	captionpos=b
+}
+
+\textbf{FFT}
+\begin{lstlisting}[style=ArduinoStyle, language=C, caption={FFT Function}, label={fft}]
+	void fft(float *real, float *imag){
+		bitReversalPermutation(real, imag);
+		
+		for (uint8_t stage = 1; stage <= 7; stage++){
+			uint8_t m = 1 << stage;
+			uint8_t m2 = m >> 1;
+			
+			float theta = -2.0 * PI / m;
+			float wm_real = fastCos(theta);
+			float wm_imag = fastSin(theta);
+			
+			for (uint8_t k = 0; k < N; k += m){
+				float w_real = 1.0;
+				float w_imag = 0.0;
+				
+				for (uint8_t j = 0; j < m2; j++){
+					uint8_t t = k + j + m2;
+					uint8_t u = k + j;
+					
+					float tr = w_real * real[t] - w_imag * imag[t];
+					float ti = w_real * imag[t] + w_imag * real[t];
+					
+					real[t] = real[u] - tr;
+					imag[t] = imag[u] - ti;
+					
+					real[u] += tr;
+					imag[u] += ti;
+					
+					// w = w * wm
+					float temp = w_real;
+					w_real = temp * wm_real - w_imag * wm_imag;
+					w_imag = temp * wm_imag + w_imag * wm_real;
+				}
+			}
+		}
+	}
+\end{lstlisting}
+
+\newpage
+\textbf{Interrupt Service Setup and Routine}
+\begin{lstlisting}[style=ArduinoStyle, language=C, caption={Interrupt Service Setup and Routine in Arduino for Sampling}, label={isr}]
+	void setupTimer1_1024Hz(){
+		cli();
+		TCCR1A = 0;
+		TCCR1B = 0;
+		OCR1A = 15624;       // 16MHz -> 1024Hz
+		TCCR1B = 0x09;       // prescaler=1
+		TIMSK1 = 0x02;       // enable OCR1A interrupt
+		sei();
+	}
+	
+	ISR(TIMER1_COMPA_vect){
+		float sample = analogRead(A0); // read analog input
+		real[writeBuf][sampleIndex] = sample;
+		imag[writeBuf][sampleIndex] = 0.0;
+		
+		sampleIndex++;
+		if (sampleIndex >= N){
+			sampleIndex = 0;
+			// Swap buffers
+			uint8_t tmp = writeBuf; 
+			writeBuf = readBuf; 
+			readBuf = tmp;
+			bufferReady = true;
+		}
+	}
+\end{lstlisting}

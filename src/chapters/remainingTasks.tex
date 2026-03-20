@@ -1,0 +1,18 @@
+\chapter{REMAINING TASKS}
+Although the proposed system demonstrates the basic working principle of an EEG based Brain Computer Interface, some tasks remain to be completed to make the system fully functional and reliable. These tasks are described below.
+
+\section{Dual Rail Power Supply / Rail Splitting Circuit Design}
+The current implementation uses a single supply voltage for circuit testing. However, the analog front end components, especially the AD620 instrumentation amplifier and active filters, require a dual rail power supply for optimal performance.
+
+A dual rail power supply or rail splitting circuit needs to be designed to generate both positive and negative supply voltages from a single DC source. This will help in proper amplification of low level EEG signals, reduce signal distortion, and improve the overall signal quality.
+
+\section{Real Time Eye Blink Detection Using EEG Electrodes}
+At present, the system detects user focus by analyzing signals generated from a function generator, which does not represent real EEG data. Eye blink detection using actual EEG electrodes has not yet been implemented.
+
+As a remaining task, EEG electrodes will be used to acquire real time signals from the scalp, and eye blinks will be detected based on high amplitude artifacts present in the EEG signal. Threshold based detection methods will be implemented to accurately distinguish eye blinks from normal EEG activity, enabling real time user command selection.
+
+\section{Keyboard Interface Development Using Matplotlib}
+Currently, the system does not include a complete graphical keyboard interface for text entry. A virtual keyboard interface needs to be developed using Python and Matplotlib to allow alphabet selection and traversal.
+
+The keyboard interface will use the output of FFT based frequency analysis to determine the user’s mental state. Alpha wave activity will be used for traversal across alphabets, while eye blink detection will be used for selection. This interface will enable hands free text entry through EEG signals and complete the intended functionality of the BCI system.
+

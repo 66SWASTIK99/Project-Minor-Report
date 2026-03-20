@@ -1,0 +1,58 @@
+\chapter{Introduction}
+
+%\noindent\textbf{CHAPTER GUIDE:} Purpose: set context, define the problem, and state objectives + scope. Must include: Background, Problem statement, Objectives, Scope and limitations. How to write: mention domain + current approaches; quantify gaps with metrics. LaTeX: Cite with cite key, reference figures and tables. General rules: formal/technical style; cite non-trivial claims; reference figures/tables in text.
+
+\section{Background}
+
+% Test abbreviations and symbols
+%This project uses \gls{ga} and \gls{ml} techniques \cite{deb2002nsga}. We also implement \gls{rl} with \gls{api} integration. The \gls{cpu} and \gls{gpu} work together for processing.
+
+%Research shows optimization methods are crucial in modern computing \cite{smith2020}. Following IEEE guidelines \cite{ieee2022author, ieee2021editorial}, we implement state-of-the-art algorithms.
+
+%The learning rate \gls{symb:alpha} is crucial, and we use discount factor \gls{symb:gamma}. Standard deviation \gls{symb:sigma} helps measure variance with mean \gls{symb:mu}.
+
+Some people have imagined controlling devices with just a thought from the head, some wanted it for fascination while some have necessities. And that is where the Brain Computer Interface comes in. Brain Computer Interface (BCI) is that system that allows a person to control a computer or device using brain signals. It allows a person to interact with a computer without using  keyboard, mouse or touchscreen. BCIs are a very beneficial tool because they can be used for assisting communication, medical rehabilitation and hands free computer interfacing.
+
+Electroencephalography (EEG) is commonly used for non invasive BCI systems as it records the electrical activity of the brain using electrodes placed on the scalp. It is the go to method because it is safe, low cost and portable but EEG signals are very small and easily affected by noise, so careful signal processing is necessary. 
+
+Different BCI methods focus on certain EEG features, such as event related signals, visual responses or natural brain rhythms, to interpret the user’s intent such as alpha brain waves, which appear in the 8-12 Hz range and are usually linked to relaxed or unfocused states. When a person is focused, alpha waves decrease which makes alpha activity useful as a simple control signal for measuring attention. Eye blinks also create strong and easy to detect signals in EEG recordings, especially at the front of the head and can be used as intentional commands. Combining alpha wave analysis with eye blink detection, a simple and reliable BCI control method can be achieved without using complex classification techniques.
+Based on these ideas, this project focuses on developing a low cost and easy to use EEG based BCI typing system. The ultimate goal is to apply simple signal processing techniques like filtering and frequency analysis while avoiding or using few expensive equipment and advanced machine learning methods.
+
+\section{Motivation}
+The main motivation for this project comes from the need for affordable and easy to use assistive technologies that support hands free communication for people in need. Signal filtering, processing and many other important elements can be implemented which enhances our capability. Beyond technology and skill it also serves in building and advancing our society by empowering the individuals giving them tools to communicate, interact and participate more fully in everyday life.
+
+Another motivation is to explore whether BCI control can be achieved using basic EEG signals and low cost hardware. When eye blinks alpha waves are among the easiest EEG features to detect and understand compared to other brain signals. Using these signals along with simple processing techniques like filtering and Fast Fourier Transform (FFT), it is possible to build a BCI system that is easy to set up and use.
+
+This project is also motivated by the desire to gain hands on experience in recording and processing EEG signals. Creating a basic BCI typing interface helps understand real world challenges such as noisy signals, device limitations, market limitations, economic feasibility and so on. Overall, this project aims to create an effective BCI system with less complex machine learning or expensive equipment and simple approach to demonstrate the core ideas of brain computer interaction.
+
+
+\section{Problem Statement}
+Regular computer typing and interaction is dependent upon physical devices like keyboards and mice. But these devices are not suitable for people with motor disabilities or situations that require hands free operation. Brain Computer Interface (BCI) systems can offer a solution but many existing EEG based BCI typing systems depend on expensive equipment, complex signal processing or machine learning models that need large amounts of data and long training which makes them hard to use in low budget, academic or experimental environments.
+
+The main problem that our project aims to address is the absence of a simple and affordable BCI typing system that works with simple EEG hardware and fundamental signal processing techniques. On the other hand, the important element to explore is whether eye blink detection and alpha wave analysis can reliably control a basic typing or text selection interface without advanced classification algorithms and the difficult challenge is to extract meaningful control signals from noisy EEG data using only a few electrodes while keeping the system reliable and easy to use.
+
+This project aims to solve this problem by designing and testing a low complexity EEG based BCI typing system suitable for educational and assistive purposes.
+
+
+\section{Objectives}
+The main objectives of this project are as follows:
+\begin{itemize}
+	\item To design a simple and low cost EEG based Brain Computer Interface system
+	\item To analyze EEG frequency bands using basic filtering and FFT
+	\item To develop a basic text entry using detected EEG signals.
+\end{itemize}
+
+
+
+\section{Scope and Limitations}
+This project focuses on designing and building a simple EEG based BCI typing or text selection system using eye blink detection and alpha wave analysis via non invasive EEG signal recording, digital filtering, FFT based feature extraction and basic stimuli based decision making. Only a few EEG channels are used to make the system low cost and easy to set up.
+
+The project does not aim for high typing speed or commercial level accuracy. Advanced machine learning, large scale testing and clinical validation are not included. The system is mainly intended for educational, experimental and proof of concept purposes demonstrating the basic ideas of BCI and signal processing.
+
+Possible applications of this BCI typing system include:\begin{itemize}
+	\item Assistive communication for people with limited motor abilities
+	\item Hands free computer control where keyboards or mice are not practical
+	\item Educational demonstrations for learning EEG signal processing and BCI fundamentals
+	\item Student and research projects focusing on low cost neuroscience or biomedical engineering experiments
+	\item Experimental platforms for further development of more advanced BCI.
+\end{itemize}
