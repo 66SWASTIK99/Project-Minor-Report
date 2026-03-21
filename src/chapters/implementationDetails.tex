@@ -13,6 +13,83 @@ The AD620 is a precision instrumentation amplifier specifically designed for low
 The AD620 works by amplifying only the difference between two input signals, while rejecting signals common to both inputs (common mode noise), critical for rejecting noise from power lines, body movement, and the environment.
 The gain of the AD620 is set using a single external resistor, allowing precise control of amplification. This ensures that EEG signals are amplified to a level suitable for further processing without distortion.
 
+\subsection{High Pass Filter}
+After the instrumentation amplification, the signals are sent to a high-pass filter to remove DC components. This is done in two stages: filtering and amplification so that the DC components do not get amplified in the filtering stage.
+
+In the filtering stage, there is unity gain and only high-pass filtering action is performed. The cutoff frequency is:
+\[
+f_c = \frac{1}{2\pi R_1 C_4}
+\]
+Substituting the values:
+\[
+f_c = \frac{1}{2\pi \cdot 3.3\,\text{k}\Omega \cdot 47\,\mu\text{F}} = 1.02\,\text{Hz}
+\]
+
+After that, we have a gain stage with gain:
+\[
+A_v = -\frac{R_4}{R_3}
+\]
+Substituting the values:
+\[
+A_v = -\frac{220\,\text{k}\Omega}{5\,\text{k}\Omega} = -44
+\]
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width = 14.5cm, height=6.5cm]{src/images/figures/highpass.png}
+	\caption{High Pass Filter}
+	\label{highpass_filter}
+\end{figure}
+
+A capacitor of \(1\,\text{nF}\) is placed in the gain stage for stability.
+
+\subsection{Signal Amplification}
+The first big problem in our project is that brain signals are very weak. They are measured in microvolts, which is extremely small. It is like trying to hear a whisper in a noisy stadium.
+
+To make these signals strong enough for a computer to read, we use a special chip called the AD620 Instrumentation Amplifier. We chose this instrumentation amplifier as it common mode noise like electrical interference from wire and power sources, and extracts the cleaner brain signals. Whereas some amplifiers adds extra noise on top of our signal, but ad620 is much more reliable for our use purpose.
+
+For the size of signal strength, we need to control how much the signal is amplified. This is called gain (G).
+
+In AD620, gain is set using one resistor called Rg, connected between Pin 1 and Pin 8.
+The formula is:
+\[
+G = \frac{49.4\,\text{k}\Omega}{R_g} + 1
+\]
+
+We decided to use a gain of 16.
+
+Resistor calculation for gain:
+\[
+G = 16
+\]
+
+\[
+16 = \frac{49.4}{R_g} + 1
+\]
+
+\[
+16 - 1 = \frac{49.4}{R_g}
+\]
+
+\[
+15 = \frac{49.4}{R_g}
+\]
+
+\[
+R_g = \frac{49.4}{15}
+\]
+
+\[
+R_g \approx 3.29\,\text{k}\Omega
+\]
+
+Since \(3.3\,\text{k}\Omega\) is a standard resistor value, we used \(3.3\,\text{k}\Omega\).
+
+We did not use higher gain to amplify signal as the recieved signal also contains DC offset, a constant background voltage which shifts the AC signal vertically.If we amplify too much in the beginning, this offset becomes too large and causes saturation. That means the amplifier reaches its limit and cuts off the real signal. So we keep the gain moderate in the first stage.
+
+We also use a Driven Right Leg (DRL) circuit, which takes the average of the measured signals and feeds a small inverted version of this signal back into the body. This feedback helps further reduce common-mode noise and interference, improving the overall signal quality. In addition to noise reduction, the DRL circuit also enhances patient safety by helping stabilize the body’s reference potential. As a result, the final output signal becomes much cleaner and smoother, with significantly less noise and distortion compared to an uncorrected measurement.
+
+
 \subsection{Analog Signal Conditioning Using Band Pass Filter}
 In this project, analog signal conditioning is achieved using a band pass filter circuit, which performs the combined functions of high pass filtering, low pass filtering, and suppression of power line interference. Instead of using separate filter stages, a single band pass filter is designed to allow only the EEG frequency range of interest to pass while rejecting unwanted components.
 The band pass filter ensures that the acquired EEG signal is properly conditioned before analog to digital conversion, thereby improving signal quality and reliability.
