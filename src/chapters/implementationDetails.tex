@@ -13,6 +13,14 @@ The AD620 is a precision instrumentation amplifier specifically designed for low
 The AD620 works by amplifying only the difference between two input signals, while rejecting signals common to both inputs (common mode noise), critical for rejecting noise from power lines, body movement, and the environment.
 The gain of the AD620 is set using a single external resistor, allowing precise control of amplification. This ensures that EEG signals are amplified to a level suitable for further processing without distortion.
 
+\begin{figure}[H]
+	\centering
+	\includegraphics[width = 14.5cm, height=6.5cm]{src/images/figures/instrumentation.png}
+	\caption{Instrumentation Amplifier}
+	\label{instrumentation}
+\end{figure}
+
+
 \subsection{High Pass Filter}
 After the instrumentation amplification, the signals are sent to a high-pass filter to remove DC components. This is done in two stages: filtering and amplification so that the DC components do not get amplified in the filtering stage.
 
@@ -41,7 +49,7 @@ A_v = -\frac{220\,\text{k}\Omega}{5\,\text{k}\Omega} = -44
 	\label{highpass_filter}
 \end{figure}
 
-A capacitor of \(1\,\text{nF}\) is placed in the gain stage for stability.
+There is a small capacitor \(C_5 = 1\,\text{nF}\) in this stage, whose primary role is to maintain the stability of the circuit. It helps prevent unwanted high-frequency noise from affecting the signal and ensures that the amplifier does not oscillate or produce unintended vibrations. In a way, it acts like a shock absorber, keeping the signal smooth and steady throughout operation.
 
 \subsection{Signal Amplification}
 The first big problem in our project is that brain signals are very weak. They are measured in microvolts, which is extremely small. It is like trying to hear a whisper in a noisy stadium.
