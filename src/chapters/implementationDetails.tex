@@ -338,6 +338,17 @@ This algorithm is used in arduino to know the frequency composition of received 
 The bit reversal technique is a preprocessing step used in the Cooley-Tukey Fast Fourier Transform (FFT) to enable in place computation and reduce memory usage. In the FFT, the input sequence is recursively divided into even and odd indexed elements. This recursion can consume extra memory due to multiple temporary arrays.
 
 We can reorder the sample sequence to perform the computation with low memory cost using bit reversal by reversing bits. For our use 1 byte memory is more than enough for bit reversal so we have put in pre defined array as 64 sized array is enough for this computation. After reordering, the FFT algorithm can operate iteratively and in place, eliminating the need for recursive subarrays. This reduces memory overhead, improves cache efficiency, and allows the FFT to maintain its computational complexity of $N \log N$.
+
+An N point signal is decomposed into N signals each containing a single point.
+Each stage uses an interlace decomposition, separating the even and odd numbered samples.
+\begin{figure}[H]
+	\centering
+	\includegraphics[width = \textwidth, height=7cm]{src/images/figures/odd_even.png}
+	\caption{The FFT sample decomposition. \cite{smith1999dsp}
+	}
+	\label{odd_even}
+\end{figure}
+
 \begin{table}[H]
 	\centering
 	\caption{Bit-reversal permutation for $N=8$ FFT}
@@ -357,8 +368,6 @@ We can reorder the sample sequence to perform the computation with low memory co
 		\hline
 	\end{tabular}
 \end{table}
-
-
 
 
 

@@ -5,13 +5,18 @@ This section presents the results obtained from the implementation and testing o
 Low-amplitude signals in the microvolt range were applied at the input of the instrumentation amplifier to simulate EEG signals. The AD620 based instrumentation amplifier successfully amplified the input signal without significant distortion. The amplified signal was observed to be stable and suitable for further processing through the filtering stages.
 The result confirms that the amplification stage is capable of handling low-level biopotential signals, which is essential for EEG signal acquisition.
 
-\section{Filtered Signal Analysis}
-The amplified signal was passed through a high pass filter with a cutoff frequency of 0.5 Hz and a low-pass filter with a cutoff frequency of 40 Hz. The high-pass filter effectively removed DC offset and baseline drift, while the low-pass filter suppressed high frequency noise.
+\section{High Pass Filter}
+ 
+\begin{figure}[H]
+	\includegraphics[width=\textwidth]{src/images/figures/highpass_plot.png}
+	\caption{Frequency Response of High Pass Filter}
+	\label{frequency_response_highpass}
+\end{figure}
 
 \begin{figure}[H]
-	\includegraphics[width=\textwidth]{src/images/figures/frequency_response.png}
-	\caption{Frequency Response of Circuit}
-	\label{frequency_response}
+	\includegraphics[width=\textwidth]{src/images/figures/bandpass_compare.png}
+	\caption{Frequency Response of Band Pass Filter}
+	\label{bandpass_compare}
 \end{figure}
 
 \begin{table}[h]
