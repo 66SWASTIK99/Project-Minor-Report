@@ -108,6 +108,51 @@ The upper cutoff frequency of the band pass filter limits high frequency noise, 
 
 In addition, the band pass filter is designed such that power line interference at 50 Hz is significantly attenuated. By sharply reducing signal components around this frequency, the filter minimizes the effect of electrical noise from mains power supply without affecting the useful EEG frequency bands.
 
+Transfer function first stage:
+\begin{equation}
+	H_1(s)=\frac{V_o(s)}{V_{in}(s)}
+	=\frac{-R_1 C_1\,s}{R_1R_2C_1C_2\,s^2+R_2(C_1+C_2)\,s+1}
+\end{equation}
+
+\begin{equation}
+	H_1(s)=\frac{-0.03728\,s}{8.0401776\times10^{-5}\,s^2+0.0059487\,s+1}
+\end{equation}
+
+Transfer function 2nd stage:
+\begin{equation}
+	H_2(s)=\frac{V_o(s)}{V_{in}(s)}
+	=\frac{-R_3 C_3 R_7 \, s}
+	{R_3R_4R_7C_3C_4\,s^2+R_4R_7(C_3+C_4)\,s+(R_4+R_7)}
+\end{equation}
+
+\begin{equation}
+	H_2(s)=\frac{-1.673\,s}{4.107\,s^2+254.317\,s+87900}
+\end{equation}
+
+Transfer function 3rd stage:
+\begin{equation}
+	H_3(s)=\frac{V_o(s)}{V_{in}(s)}
+	=\frac{-R_5 C_5 R_8\,s}
+	{R_5R_6R_8C_5C_6\,s^2+R_6R_8(C_5+C_6)\,s+(R_6+R_8)}
+\end{equation}
+
+\begin{equation}
+	H_3(s)=\frac{-3.40331\,s}{14.4350344\,s^2+516.864\,s+103300}
+\end{equation}
+
+Final transfer function:
+\begin{equation}
+	H(s)=H_1(s)H_2(s)H_3(s)
+\end{equation}
+
+\begin{equation}
+	H(s)=
+	\frac{(-0.03728,s)(-1.673,s)(-3.40331,s)}
+	{\left(8.0401776\times10^{-5},s^2+0.0059487,s+1\right)
+		\left(4.107,s^2+254.317,s+87900\right)
+		\left(14.4350344,s^2+516.864,s+103300\right)}
+\end{equation}
+
 
 \subsection{Arduino Microcontroller (ADC \& Control Unit)}
 The Arduino acts as the digital interface between the analog EEG hardware and the computer. It contains a built in Analog to Digital Converter (ADC) that converts the conditioned analog signal into digital data.
