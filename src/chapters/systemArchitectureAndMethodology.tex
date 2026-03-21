@@ -35,7 +35,7 @@ In the digital stage, the system stores the sampled EEG data in short time windo
 \newpage
 This flowchart illustrates the operation of the proposed EEG-based BCI system. The system acquires EEG signals, amplifies them using an instrumentation amplifier, and removes unwanted noise and power-line interference through filtering. FFT is then applied to extract relevant features. Based on these features, the system first checks for blink detection to execute a blink command; if no blink is detected, it evaluates beta-band power to determine focus and execute the corresponding focus command, after which the process ends.
 
-\section{FFT flochart for Arduino Program}
+\section{FFT flowchart for Arduino Program}
 \tikzset{
 	startstop/.style={
 		ellipse,
@@ -149,6 +149,67 @@ This flowchart illustrates the operation of the proposed EEG-based BCI system. T
 	\caption{Flowchart of Main Program Flow on Arduino}
 \end{figure}
 
+
+\section{CORDIC Algorithm}
+As we were implementing FFT algorithm, the need of using sine and cosine trigonometric function became inevitable. Using regular built-in library available is expensive for computation for our 16MHz Arduino micro-controller. So, we decided to adopt CORDIC algorithm to create our custom function which is tuned according to our need of accuracy trading off with the computation as accuracy is disposable since it is not our main concern.
+
+The CORDIC algorithm (COordinate Rotation DIgital Computer) is an efficient iterative method useful to compute various mathematical functions, especially trigonometric, hyperbolic, exponential, logarithmic functions, square roots, and vector rotations using only shift and add operations.
+
+
+The CORDIC (COordinate Rotation DIgital Computer) algorithm computes vector rotations using only iterative shift-and-add operations. 
+A vector $(x, y)$ is rotated by breaking the desired rotation into a sequence of smaller micro-rotations:
+
+\begin{equation}
+\theta_i = \tan^{-1}(2^{-i})
+\end{equation}
+
+Each iteration performs a rotation by $\pm \theta_i$, which can be implemented using only arithmetic shifts and additions.
+
+The standard rotation equations are:
+
+\begin{equation}
+	x' = x \cos\theta - y \sin\theta
+\end{equation}
+\begin{equation}
+	y' = x \sin\theta + y \cos\theta
+\end{equation}
+
+CORDIC rewrites these using the identity $\tan\theta \approx 2^{-i}$, allowing multiplication by powers of two to be replaced with bit shifts.
+
+The iterative update equations become:
+
+\begin{align}
+	x_{i+1} &= x_i - d_i \cdot y_i \cdot 2^{-i} \\
+	y_{i+1} &= y_i + d_i \cdot x_i \cdot 2^{-i} \\
+	z_{i+1} &= z_i - d_i \cdot \tan^{-1}(2^{-i})
+\end{align}
+where $d_i \in \{-1, +1\}$ determines the direction of rotation.
+
+\subsection{Scaling Factor}
+
+Each micro-rotation introduces a scaling effect on the vector magnitude. After $n$ iterations, the accumulated scale factor is:
+
+\[
+K_n = \prod_{i=0}^{n-1} \frac{1}{\sqrt{1 + 2^{-2i}}}
+\]
+
+Thus, the true magnitude must be corrected as:
+
+\[
+\begin{bmatrix}
+	x_{\text{final}} \\
+	y_{\text{final}}
+\end{bmatrix}
+=
+K_n
+\begin{bmatrix}
+	x_n \\
+	y_n
+\end{bmatrix}
+\]
+
+where $K_n$ is typically precomputed for a given number of iterations.
+
 \section{EEG Electrode Placement and Signal Acquisition}
 The human brain consists of billions of neurons that communicate with each other using electrical impulses. When a group of neurons becomes active simultaneously such as during thinking, eye blinking, or movement small electrical potentials are generated due to ionic current flow across neuronal cell membranes. These electrical activities create voltage fluctuations that spread through the brain tissues, skull, and scalp.
 
@@ -158,7 +219,6 @@ Each EEG measurement is taken as a potential difference between two electrodes: 
 
 To ensure proper signal acquisition, electrodes are usually placed using conductive gel or saline solution to reduce skin electrode impedance. To capture the beta waves one electrode is placed in the Fpz position according to the 10-20 system and another electrode is placed at the A1 position which is the earlobe that is used as reference as there is little brain activity in the earlobes. The captured signal is then passed to an instrumentation amplifier, where it is amplified and prepared for filtering and further processing in the BCI system.
 
-\newpage
 \section{Instrumentation Amplifier (AD620) Design and Implementation}
 In our system, the AD620 instrumentation amplifier operates by amplifying the differential voltage between the scalp electrode and  the reference electrode while rejecting common unwanted signals. The two input pins of the AD620 are connected to the active and reference EEG electrodes. These electrodes pick up both the desired brain signal and unwanted noise such as ac power outlet interference (50 Hz) and motion artifacts. Since most of this noise appears equally on both electrodes, it is classified as common mode noise.
 
@@ -238,6 +298,9 @@ The ADC used by our microcontroller is Successive Approximation ADC. SAR ADC is 
 
 Arduino boards, such as the Arduino Uno, feature built-in hardware timers that provide precise time measurement, event counting, and pulse generation. The key specifications of these timers are as follows:
 
+\renewcommand{\labelitemi}{$\bullet$}
+\renewcommand{\labelitemii}{$\bullet$}
+
 \begin{itemize}
 	\item \textbf{Timer Types:}
 	\begin{itemize}
@@ -278,8 +341,9 @@ Arduino boards, such as the Arduino Uno, feature built-in hardware timers that p
 
 \section{Frequency Domain Analysis Using Fast Fourier Transform (FFT)}
 The digital data is now ready for processing. But the signal is in time domain i.e the signal shows voltage vs time. Brain rhythms (alpha, beta, etc.) are hidden inside the signal. So, the problem is, from the time domain signal alone, we cannot clearly separate brain waves by frequency. For that we need to convert the EEG signals from time domain to frequency domain. And a fourier transform allows us to do that. 
-
-$$F(\omega) = \int_{-\infty}^{\infty} x(t)\, e^{-j \omega t} \, dt$$
+\begin{equation}
+	F(\omega) = \int_{-\infty}^{\infty} x(t)\, e^{-j \omega t} \, dt
+\end{equation}
 where:\\
 x(t): The original function or signal in the time domain.\\
 $F(\omega)$: The transformed function in the frequency domain.\\
@@ -309,9 +373,9 @@ When performing a Fourier transform, the signal taken for sampling is finite, wi
 Although spectral leakage cannot be completely eliminated, it can be reduced using windowing techniques. Windowing reduces spectral leakage by smoothing the signal at its boundaries before transforming it from the time domain to the frequency domain.
 
 In this project, the Hann window is used to reduce spectral leakage before transforming the EEG signal. The Hann window smooths abrupt signal transitions by gradually reducing the signal amplitude to zero at the edges, making it suitable for EEG frequency analysis. The Hann window is defined as:
-\[
+\begin{equation}
 w(n) = \frac{1}{2}\left(1 - \cos\left(\frac{2\pi n}{N-1}\right)\right), \quad n = 0, 1, 2, \ldots, N-1
-\]
+\end{equation}
 
 \begin{figure}[H]
 	\includegraphics[width=14cm]{src/images/figures/hann.png}

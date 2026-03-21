@@ -13,35 +13,19 @@ The result confirms that the amplification stage is capable of handling low-leve
 	\label{frequency_response_highpass}
 \end{figure}
 
+\section{Band Pass Filter}
 \begin{figure}[H]
 	\includegraphics[width=\textwidth]{src/images/figures/bandpass_compare.png}
 	\caption{Frequency Response of Band Pass Filter}
 	\label{bandpass_compare}
 \end{figure}
 
-\begin{table}[h]
-	\centering
-	\caption{Frequency Response Data}
-	\begin{tabular}{ccc}
-		\toprule
-		Fin & Vout & Gain \\
-		\midrule
-		3	  & 0.136 	& 3.4 \\
-		5	  & 0.288 	& 7.2 \\
-		7	  & 0.424 	& 10.6 \\
-		9	  & 1     	& 25   \\
-		11	  & 2.52  	& 63   \\
-		13	  & 3.4   	& 85   \\
-		15	  & 3.68  	& 92   \\
-		20	  & 3.28  	& 82   \\
-		22	  & 2.48  	& 62   \\
-		24	  & 1.6   	& 40   \\
-		26	  & 1.04  	& 26   \\
-		28	  & 0.72  	& 18   \\
-		30	  & 0.50  	& 12.5 \\
-		\bottomrule
-	\end{tabular}
-\end{table}
+\section{FFT of Recieved Signal}
+\begin{figure}[H]
+	\includegraphics[width=\textwidth]{src/images/figures/betawaves.png}
+	\caption{FFT plot of recieved signal}
+	\label{betawaves}
+\end{figure}
 
 50 Hz notch filter was applied to reduce power line interference. The filtered signal showed significant reduction in noise components, resulting in a cleaner waveform suitable for frequency analysis.
 
