@@ -364,7 +364,45 @@ x[n]:  n-th sample\\
 
 The Fast Fourier Transform (FFT) is not a different transform but an efficient algorithm used to compute the Discrete Fourier Transform (DFT). FFT exploits the symmetry and periodicity properties of the DFT to reduce the number of calculations. Using FFT, the computational complexity is reduced from $O(N^2)$ to $O(N \log N)$, making it much faster and suitable for real-time signal processing applications such as EEG, ECG, image processing, and communication systems.
 
-FFT computes frequency components efficiently with a computational complexity of $O(N \log N)$, making it suitable for real-time EEG processing. The magnitude of the FFT output, $|X[k]|$ or the power spectrum $|X[k]|^2$, indicates the strength of each frequency component present in the EEG signal. By analyzing the power distribution across frequency bands such as the alpha frequency band (8--13 Hz), the presence and intensity of specific brain rhythms can be identified. Thus, FFT transforms the time-domain EEG signal into a frequency-domain representation, enabling reliable detection and analysis of brain activity patterns that are essential for EEG-based signal processing.
+FFT computes frequency components efficiently with a computational complexity of $O(N \log N)$, making it suitable for real-time EEG processing. The magnitude of the FFT output, $|X[k]|$ or the power spectrum $|X[k]|^2$, indicates the strength of each frequency component present in the EEG signal. By analyzing the power distribution across frequency bands such as the alpha frequency band (8-13 Hz), the presence and intensity of specific brain rhythms can be identified. Thus, FFT transforms the time-domain EEG signal into a frequency-domain representation, enabling reliable detection and analysis of brain activity patterns that are essential for EEG based signal processing.
+
+\section{Twiddle Factor Computation Under Recurrence}
+Twiddle factors in the Fast Fourier Transform (FFT) are defined as:
+
+\begin{equation}
+	W_N^k = e^{-j \frac{2\pi k}{N}}
+\end{equation}
+
+where \(N\) is the FFT size, \(k\) is the index, and \(j = \sqrt{-1}\).
+
+Instead of computing each value using sine and cosine, FFT uses a recurrence approach. Define the general twiddle factor:
+
+\begin{equation}
+	W_N = e^{-j \frac{2\pi}{N}}
+\end{equation}
+
+Then any twiddle factor can be written as:
+\begin{equation}
+	W_N^k = (W_N)^k
+\end{equation}
+
+From this, we obtain the recurrence relation:
+\begin{equation}
+	W_N^{k+1} = W_N^k \cdot W_N
+\end{equation}
+
+This means each successive twiddle factor is obtained by multiplying the previous one by a fixed complex constant \(W_N\), which corresponds to a constant rotation on the complex unit circle:
+
+\begin{equation}
+	e^{j\theta} \cdot e^{j\Delta\theta} = e^{j(\theta + \Delta\theta)}
+\end{equation}
+
+Thus:
+\begin{equation}
+	W \leftarrow W \cdot W_N
+\end{equation}
+
+generates all required roots of unity efficiently without recomputing sine and cosine values.
 
 \section{Windowing -- Hann Window}
 

@@ -34,8 +34,18 @@ Fast Fourier Transform (FFT) was applied to the filtered signal to convert it fr
 
 When the input signal frequency was set within the alpha band range (8–12 Hz), a noticeable peak was observed in the FFT spectrum within this frequency range. This confirms that the system is capable of identifying specific EEG frequency bands using frequency domain analysis.
 
-\section{Alpha Band Detection Result}
-The results showed that when the simulated signal frequency fell within the alpha range, the system successfully detected increased alpha band power. This demonstrates the feasibility of using alpha wave activity as a control parameter for the BCI system.
+\section{Confusion Matrix}
+\begin{figure}[H]
+	\includegraphics[width=\textwidth]{src/images/figures/confusion.png}
+	\caption{Confusion}
+	\label{confustion}
+\end{figure}
+
+This confusion matrix was used to study how well the single-channel EEG BCI typing system could separate three states: blink, focus, and idle. The rows show the true class, while the columns show the class predicted by the system. The values on the diagonal are the correct predictions. The system correctly identified 16 blink trials, 15 focus trials, and 20 idle trials out of 25 trials for each class. This gives an overall accuracy of 68\%. These results show that the system was able to detect user intention at a basic level, but the performance was not equally strong for all three classes.
+
+The main pattern seen in the matrix is the confusion between blink and focus. Blink was predicted as focus 7 times, and focus was predicted as blink 6 times. This was the largest source of error in the system. One reason for this is that both blink and focus were measured from the same EEG channel. Because only one channel was used, the system had limited information to separate these two states clearly. A blink often creates a strong signal change, but focus can also change the signal, especially when the user slightly moves the eyes, changes forehead tension, or produces small muscle activity while concentrating. Because of this, the system could often tell that some intentional activity was present, but it could not always decide whether that activity came from blink or focus.
+
+The idle class showed the best result, with 20 correct predictions. This is likely because idle periods are more stable and closer to the normal baseline signal. Even so, a few idle trials were still classified as blink or focus, which may have happened because of noise, small unwanted eye movements, or changes in the signal that were not related to a real command. Focus had the weakest result, which is also reasonable because focus is harder to measure than blink. Blink is a short and clear event, while focus is a mental state that changes slowly and may not look the same in every trial. Overall, the confusion matrix suggests that the system is working, but the main challenge is separating blink and focus correctly when both are taken from a single EEG channel.
 
 \section{System Limitation and Current Status}
 At the current stage, real-time EEG data acquisition using electrodes and eye blink detection has not been fully implemented. The system primarily validates the signal processing chain, including amplification, filtering, and FFT based frequency analysis.

@@ -116,7 +116,6 @@
 		\midrule
 		High-Pass Filter & Cut-off frequency = \SI{10}{\hertz} \\
 		Low-Pass Filter & Cut-off frequency = \SI{40}{\hertz} \\
-		Notch Filter & Center frequency = \SI{50}{\hertz} \\
 		Filter Order & Second order \\
 		Purpose & Noise and artifact removal \\
 		\bottomrule
@@ -224,25 +223,24 @@
 		cli();
 		TCCR1A = 0;
 		TCCR1B = 0;
-		OCR1A = 15624;       // 16MHz -> 1024Hz
+		OCR1A = 31249;       // 16MHz -> 512Hz
 		TCCR1B = 0x09;       // prescaler=1
 		TIMSK1 = 0x02;       // enable OCR1A interrupt
 		sei();
 	}
 	
 	ISR(TIMER1_COMPA_vect){
-		float sample = analogRead(A0); // read analog input
-		real[writeBuf][sampleIndex] = sample;
-		imag[writeBuf][sampleIndex] = 0.0;
+		ADCSRA |= (1 << ADSC); 
+		float sample = adc * ADC;
+		sample-=5;
 		
-		sampleIndex++;
-		if (sampleIndex >= N){
-			sampleIndex = 0;
-			// Swap buffers
-			uint8_t tmp = writeBuf; 
-			writeBuf = readBuf; 
-			readBuf = tmp;
-			bufferReady = true;
+		circBuf[writeIndex] = sample;
+		writeIndex = (writeIndex + 1) & (N - 1);
+		
+		samplesCollected++;
+		if (samplesCollected >= N &&
+		(((samplesCollected - N) & (HOP_SIZE - 1)) == 0)) {
+			fftReady = true;
 		}
 	}
 \end{lstlisting}
