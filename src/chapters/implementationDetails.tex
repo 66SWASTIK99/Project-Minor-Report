@@ -145,13 +145,15 @@ Final transfer function:
 	H(s)=H_1(s)H_2(s)H_3(s)
 \end{equation}
 
-\begin{equation}
-	H(s)=
-	\frac{(-0.03728,s)(-1.673,s)(-3.40331,s)}
-	{\left(8.0401776\times10^{-5},s^2+0.0059487,s+1\right)
-		\left(4.107,s^2+254.317,s+87900\right)
-		\left(14.4350344,s^2+516.864,s+103300\right)}
-\end{equation}
+\begin{align}
+	H(s) &=
+	\frac{(-0.03728s)(-1.673s)(-3.40331s)}
+	{(8.040\times10^{-5}s^2+0.0059487s+1)
+		(4.107s^2+254.317s+87900)} \notag \\
+	&\quad \times
+	\frac{1}
+	{(14.435s^2+516.864s+103300)}
+\end{align}
 
 
 \subsection{Arduino Microcontroller (ADC \& Control Unit)}
