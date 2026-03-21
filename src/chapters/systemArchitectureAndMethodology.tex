@@ -35,6 +35,120 @@ In the digital stage, the system stores the sampled EEG data in short time windo
 \newpage
 This flowchart illustrates the operation of the proposed EEG-based BCI system. The system acquires EEG signals, amplifies them using an instrumentation amplifier, and removes unwanted noise and power-line interference through filtering. FFT is then applied to extract relevant features. Based on these features, the system first checks for blink detection to execute a blink command; if no blink is detected, it evaluates beta-band power to determine focus and execute the corresponding focus command, after which the process ends.
 
+\section{FFT flochart for Arduino Program}
+\tikzset{
+	startstop/.style={
+		ellipse,
+		draw=black, thick,
+		minimum width=5cm,
+		minimum height=0.9cm,
+		align=center,
+		font=\small
+	},
+	process/.style={
+		rectangle,
+		draw=black, thick,
+		minimum width=8cm,
+		minimum height=1cm,
+		align=center,
+		font=\small,
+		inner sep=6pt
+	},
+	decision/.style={
+		diamond, aspect=3,
+		draw=black, thick,
+		minimum width=7cm,
+		align=center,
+		font=\small,
+		inner sep=2pt
+	},
+	arrow/.style={-{Stealth[length=6pt]}, thick},
+}
+%% ════════════════════════════════════════════════════════
+%%  PAGE 1 — Interrupt Service Routine
+%% ════════════════════════════════════════════════════════
+\begin{figure}[H]
+	\centering
+	\begin{tikzpicture}[node distance=0.65cm]
+		
+		\node (isrstart) [startstop]                        {Timer interrupt fires};
+		\node (adc)      [process,  below=of isrstart]      {Start conversion\\read and scale raw sample};
+		\node (wrbuf)    [process,  below=of adc]           {Write sample to circular buffer\\advance index and sample count};
+		\node (isrdec)   [decision, below=0.7cm of wrbuf]   {Buffer full \&\\hop boundary?};
+		\node (setflag)  [process,  below=0.7cm of isrdec]  {Set ready flag};
+		\node (isrend)   [startstop, below=of setflag]      {Return from interrupt};
+		
+		%% Arrows
+		\draw[arrow] (isrstart) -- (adc);
+		\draw[arrow] (adc)      -- (wrbuf);
+		\draw[arrow] (wrbuf)    -- (isrdec);
+		\draw[arrow] (isrdec)   -- node[right, font=\small]{Yes} (setflag);
+		\draw[arrow] (setflag)  -- (isrend);
+		
+		%% "No" branch: right bend bypassing to isrend
+		\draw[arrow] (isrdec.east) -- ++(2.5,0)
+		|- (isrend.east);
+		\node[font=\small] at ($(isrdec.east)+(1.2,0.25)$) {No};
+		
+		%% Bounding box
+		\node[draw=black, thick, rounded corners=6pt,
+		fit=(isrstart)(adc)(wrbuf)(isrdec)(setflag)(isrend),
+		inner sep=14pt,
+		label={[font=\normalsize\bfseries]above:}] {};
+		
+	\end{tikzpicture}
+	\caption{Flowchart of Interrupt Service Routine on Arduino}
+\end{figure}
+
+\newpage
+
+%% ════════════════════════════════════════════════════════
+%%  PAGE 2 — Main Program Flow
+%% ════════════════════════════════════════════════════════
+\begin{figure}[H]
+	\centering
+	\begin{tikzpicture}[node distance=0.65cm]
+		
+		\node (start)    [startstop]                        {START};
+		\node (setup)    [process,  below=of start]         {Initialize system\\(communication, converter, buffer, timer)};
+		\node (timer)    [process,  below=of setup]         {Configure periodic timer\\(disable interrupts $\to$ set interval $\to$ enable interrupts)};
+		\node (loop)     [process,  below=of timer]         {Wait (main loop)};
+		\node (dec)      [decision, below=0.7cm of loop]    {New data ready?};
+		\node (clrflag)  [process,  below=0.7cm of dec]     {Clear ready flag};
+		\node (copy)     [process,  below=of clrflag]       {Copy circular buffer to working arrays};
+		\node (hann)     [process,  below=of copy]          {Apply window function\\(weight each sample)};
+		\node (fft)      [process,  below=of hann]          {Compute FFT\\(bit-reversal + butterfly stages)};
+		\node (mag)      [process,  below=of fft]           {Compute magnitude\\(sum of squares, rescale)};
+		\node (tx)       [process,  below=of mag]           {Transmit results\\(header + magnitude data)};
+		\node (endnode)  [startstop, below=of tx]           {END / repeat};
+		
+		%% Arrows
+		\draw[arrow] (start)   -- (setup);
+		\draw[arrow] (setup)   -- (timer);
+		\draw[arrow] (timer)   -- (loop);
+		\draw[arrow] (loop)    -- (dec);
+		\draw[arrow] (dec)     -- node[right, font=\small]{Yes} (clrflag);
+		\draw[arrow] (clrflag) -- (copy);
+		\draw[arrow] (copy)    -- (hann);
+		\draw[arrow] (hann)    -- (fft);
+		\draw[arrow] (fft)     -- (mag);
+		\draw[arrow] (mag)     -- (tx);
+		\draw[arrow] (tx)      -- (endnode);
+		
+		%% "No" branch: left bend back up to Wait
+		\draw[arrow] (dec.west) -- ++(-2.8,0)
+		|- (loop.west);
+		\node[font=\small] at ($(dec.west)+(-1.4,0.25)$) {No};
+		
+		%% Repeat arrow: right bend from END back up to Wait
+		\draw[arrow] (endnode.east) -- ++(2.8,0)
+		|- (loop.east);
+		\node[font=\small] at ($(endnode.east)+(1.4,0.25)$) {repeat};
+		
+	\end{tikzpicture}
+	\caption{Flowchart of Main Program Flow on Arduino}
+\end{figure}
+
 \section{EEG Electrode Placement and Signal Acquisition}
 The human brain consists of billions of neurons that communicate with each other using electrical impulses. When a group of neurons becomes active simultaneously such as during thinking, eye blinking, or movement small electrical potentials are generated due to ionic current flow across neuronal cell membranes. These electrical activities create voltage fluctuations that spread through the brain tissues, skull, and scalp.
 
