@@ -124,6 +124,13 @@ This stage begins removing unwanted signals and keeps the useful brain wave rang
 	H_1(s)=\frac{-0.03728\,s}{8.0401776\times10^{-5}\,s^2+0.0059487\,s+1}
 \end{equation}
 
+\begin{figure}[H]
+	\centering
+	\includegraphics[width = 10cm, height=3.5cm]{src/images/figures/filter_first.png}
+	\caption{$1^{\text{st}}$ stage band-pass filter}
+	\label{filter_first}
+\end{figure}
+
 Transfer function second stage:\newline
 In this stage, the filter becomes stronger and more accurate. It removes even more unwanted noise using different resistors and capacitors.
 
@@ -132,6 +139,13 @@ In this stage, the filter becomes stronger and more accurate. It removes even mo
 	=\frac{-R_3 C_3 R_7 \, s}
 	{R_3R_4R_7C_3C_4\,s^2+R_4R_7(C_3+C_4)\,s+(R_4+R_7)}
 \end{equation}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width = 10cm, height=3.8cm]{src/images/figures/filter_second.png}
+	\caption{$2^{\text{nd}}$stage band-pass filter}
+	\label{filter_second}
+\end{figure}
 
 \begin{equation}
 	H_2(s)=\frac{-1.673\,s}{4.107\,s^2+254.317\,s+87900}
@@ -145,6 +159,13 @@ This is the final cleanup stage. It works like Stage 2 but uses slightly differe
 	=\frac{-R_5 C_5 R_8\,s}
 	{R_5R_6R_8C_5C_6\,s^2+R_6R_8(C_5+C_6)\,s+(R_6+R_8)}
 \end{equation}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width = 10cm, height=3.8cm]{src/images/figures/filter_third.png}
+	\caption{$3^{\text{rd}}$stage band-pass filter}
+	\label{filter_third}
+\end{figure}
 
 \begin{equation}
 	H_3(s)=\frac{-3.40331\,s}{14.4350344\,s^2+516.864\,s+103300}
