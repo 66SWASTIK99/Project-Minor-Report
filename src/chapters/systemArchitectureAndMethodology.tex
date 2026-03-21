@@ -189,13 +189,13 @@ where $d_i \in \{-1, +1\}$ determines the direction of rotation.
 
 Each micro-rotation introduces a scaling effect on the vector magnitude. After $n$ iterations, the accumulated scale factor is:
 
-\[
+\begin{equation}
 K_n = \prod_{i=0}^{n-1} \frac{1}{\sqrt{1 + 2^{-2i}}}
-\]
+\end{equation}
 
 Thus, the true magnitude must be corrected as:
 
-\[
+\begin{equation}
 \begin{bmatrix}
 	x_{\text{final}} \\
 	y_{\text{final}}
@@ -206,7 +206,7 @@ K_n
 	x_n \\
 	y_n
 \end{bmatrix}
-\]
+\end{equation}
 
 where $K_n$ is typically precomputed for a given number of iterations.
 
