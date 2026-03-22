@@ -57,8 +57,36 @@
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=20cm, height=7.5cm, angle = 90]{src/images/figures/filter_stage.png}
-	\caption{6th order butterworth filter using lm741}
+	\caption{$6^{\text{th}}$ order butterworth filter using lm741}
 	\label{filter_circuit}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=10cm, height=7.5cm]{src/images/figures/ad620_h.jpg}
+	\caption{AD620 Instrumentation Amplifier Circuit}
+	\label{ad620_h}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=10cm, height=7.5cm]{src/images/figures/high_pass_h.jpg}
+	\caption{High Pass Filter Circuit}
+	\label{high_pass_h}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=10cm, height=7.5cm]{src/images/figures/3stage_h.jpg}
+	\caption{Three Stage $6^{\text{th}}$ Order Band Pass Circuit}
+	\label{3stage_h}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=10cm, height=7.5cm]{src/images/figures/drl_h.jpg}
+	\caption{DRL Circuit}
+	\label{drl_h}
 \end{figure}
 
 
@@ -160,6 +188,177 @@
 
 \newpage
 \section{Code Snippets:}
+\subsection{Keyboard Interface Code Snippet:}
+
+
+\lstset{
+	basicstyle=\ttfamily\footnotesize,
+	frame=none,
+	numbers=none,
+	breaklines=true,
+	columns=fullflexible,
+	showstringspaces=false,
+	keepspaces=true,
+	tabsize=4,	
+	backgroundcolor=\color{white},
+	xleftmargin=0pt,
+	framexleftmargin=0pt,
+	keywordstyle=\relax,
+	commentstyle=\relax,
+	stringstyle=\relax,
+	literate=
+	{←}{{$\leftarrow$}}1
+	{→}{{$\rightarrow$}}1
+	{…}{{\ldots}}1
+}
+
+
+\begin{lstlisting}[language=Python]
+SYMBOLS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ _<"
+
+class BinaryTyper:
+def __init__(self, symbols: str):
+self.all_symbols = list(symbols)
+self.reset_group()
+self.highlight = 0
+self.typed = ""
+
+def reset_group(self):
+self.group = self.all_symbols[:]
+self.path = []
+
+def split(self):
+mid = (len(self.group) + 1) // 2
+left = self.group[:mid]
+right = self.group[mid:]
+if not right and len(left) > 1:
+right = left[-1:]
+left = left[:-1]
+return left, right
+
+def toggle(self):
+self.highlight = 1 - self.highlight
+
+def select(self):
+left, right = self.split()
+chosen = left if self.highlight == 0 else right
+self.group = chosen
+self.path.append("L" if self.highlight == 0 else "R")
+self.highlight = 0
+
+if len(self.group) == 1:
+sym = self.group[0]
+if sym == "_":
+self.typed += " "
+elif sym == "<":
+self.typed = self.typed[:-1]
+else:
+self.typed += sym
+self.reset_group()
+
+def backspace(self):
+self.typed = self.typed[:-1]
+
+def previews(self, maxlen=20):
+left, right = self.split()
+
+def pv(lst):
+s = "".join(lst)
+return s if len(s) <= maxlen else (s[:maxlen] + "...")
+
+return pv(left), pv(right), len(self.group), 
+"".join(self.path) if self.path else "(root)"
+
+plt.ion()
+fig = plt.figure(figsize=(14, 8))
+
+ax_time = fig.add_axes([0.22, 0.78, 0.56, 0.12])
+ax_freq = fig.add_axes([0.22, 0.61, 0.56, 0.10])
+ax_ui   = fig.add_axes([0.05, 0.18, 0.90, 0.18])
+ax_ui.axis("off")
+
+buf = np.zeros(N, dtype=np.float64)
+hann = np.hanning(N)
+
+t_axis = np.arange(N) / FS
+line_t, = ax_time.plot(t_axis, buf, linewidth=1.2)
+ax_time.set_title("Time domain", fontsize=10)
+ax_time.set_xlabel("Time (s)", fontsize=9)
+ax_time.set_ylabel("Amplitude", fontsize=9)
+ax_time.tick_params(labelsize=8)
+ax_time.grid(True)
+
+f_axis = np.fft.rfftfreq(N, d=1/FS)
+line_f, = ax_freq.plot(f_axis, np.zeros_like(f_axis), linewidth=1.2)
+ax_freq.set_title("Frequency domain (Hann window)", fontsize=10)
+ax_freq.set_xlabel("Frequency (Hz)", fontsize=9)
+ax_freq.set_ylabel("Magnitude", fontsize=9)
+ax_freq.tick_params(labelsize=8)
+ax_freq.grid(True)
+ax_freq.set_xlim(0, FS/2)
+
+typer = BinaryTyper(SYMBOLS)
+
+box_left  = Rectangle((0.02, 0.18), 0.46, 0.62, 
+transform=ax_ui.transAxes,
+facecolor="#2d2d3c", edgecolor="black", linewidth=2)
+box_right = Rectangle((0.52, 0.18), 0.46, 0.62, 
+transform=ax_ui.transAxes,
+facecolor="#2d2d3c", edgecolor="black", linewidth=2)
+ax_ui.add_patch(box_left)
+ax_ui.add_patch(box_right)
+
+txt_header = ax_ui.text(
+0.02, 0.92,
+"Binary Typing Demo: auto data only | ←/→ toggle | Enter select | 
+Esc quit",
+transform=ax_ui.transAxes, fontsize=12
+)
+txt_typed  = ax_ui.text(0.02, -0.02, "", 
+transform=ax_ui.transAxes, fontsize=18)
+txt_left   = ax_ui.text(0.04, 0.36, "", 
+transform=ax_ui.transAxes, fontsize=24)
+txt_right  = ax_ui.text(0.54, 0.36, "", 
+transform=ax_ui.transAxes, fontsize=24)
+txt_status = ax_ui.text(0.52, 0.92, "", 
+transform=ax_ui.transAxes, fontsize=12)
+
+def refresh_ui(status=""):
+left_pv, right_pv, remaining, path = typer.previews()
+
+if typer.highlight == 0:
+box_left.set_facecolor("#5a78ff")
+box_right.set_facecolor("#2d2d3c")
+else:
+box_left.set_facecolor("#2d2d3c")
+box_right.set_facecolor("#ffb24a")
+
+txt_left.set_text(f"LEFT:\n{left_pv}")
+txt_right.set_text(f"RIGHT:\n{right_pv}")
+txt_typed.set_text(f"Typed: {typer.typed[-60:]}")
+txt_status.set_text(f"Path: {path} | Remaining: {remaining} | 
+{status}")
+
+refresh_ui("demo ready")
+
+def on_key(event):
+if event.key == "escape":
+plt.close(fig)
+return
+if event.key in ("left", "right"):
+typer.toggle()
+refresh_ui("KEY toggle")
+elif event.key == "enter":
+typer.select()
+refresh_ui("KEY select")
+elif event.key == "backspace":
+typer.backspace()
+refresh_ui("KEY backspace")
+
+fig.canvas.mpl_connect("key_press_event", on_key)
+\end{lstlisting}
+
+
 \lstdefinestyle{ArduinoStyle}{
 	backgroundcolor=\color{white},   % white background for printing
 	basicstyle=\ttfamily\footnotesize,
@@ -176,7 +375,37 @@
 	captionpos=b
 }
 
-\textbf{FFT}
+\subsection{Interrupt Service Setup and Routine}
+
+\begin{lstlisting}[style=ArduinoStyle, language=C, caption={Interrupt Service Setup and Routine in Arduino for Sampling}, label={isr}]
+	void setupTimer1_1024Hz(){
+		cli();
+		TCCR1A = 0;
+		TCCR1B = 0;
+		OCR1A = 31249;       // 16MHz -> 512Hz
+		TCCR1B = 0x09;       // prescaler=1
+		TIMSK1 = 0x02;       // enable OCR1A interrupt
+		sei();
+	}
+	
+	ISR(TIMER1_COMPA_vect){
+		ADCSRA |= (1 << ADSC); 
+		float sample = adc * ADC;
+		sample-=5;
+		
+		circBuf[writeIndex] = sample;
+		writeIndex = (writeIndex + 1) & (N - 1);
+		
+		samplesCollected++;
+		if (samplesCollected >= N &&
+		(((samplesCollected - N) & (HOP_SIZE - 1)) == 0)) {
+			fftReady = true;
+		}
+	}
+\end{lstlisting}
+
+\newpage
+\subsection{Code Snippet of FFT on Arduino}
 \begin{lstlisting}[style=ArduinoStyle, language=C, caption={FFT Function}, label={fft}]
 	void fft(float *real, float *imag){
 		bitReversalPermutation(real, imag);
@@ -212,35 +441,6 @@
 					w_imag = temp * wm_imag + w_imag * wm_real;
 				}
 			}
-		}
-	}
-\end{lstlisting}
-
-\newpage
-\textbf{Interrupt Service Setup and Routine}
-\begin{lstlisting}[style=ArduinoStyle, language=C, caption={Interrupt Service Setup and Routine in Arduino for Sampling}, label={isr}]
-	void setupTimer1_1024Hz(){
-		cli();
-		TCCR1A = 0;
-		TCCR1B = 0;
-		OCR1A = 31249;       // 16MHz -> 512Hz
-		TCCR1B = 0x09;       // prescaler=1
-		TIMSK1 = 0x02;       // enable OCR1A interrupt
-		sei();
-	}
-	
-	ISR(TIMER1_COMPA_vect){
-		ADCSRA |= (1 << ADSC); 
-		float sample = adc * ADC;
-		sample-=5;
-		
-		circBuf[writeIndex] = sample;
-		writeIndex = (writeIndex + 1) & (N - 1);
-		
-		samplesCollected++;
-		if (samplesCollected >= N &&
-		(((samplesCollected - N) & (HOP_SIZE - 1)) == 0)) {
-			fftReady = true;
 		}
 	}
 \end{lstlisting}

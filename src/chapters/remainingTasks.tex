@@ -1,18 +1,34 @@
-\chapter{REMAINING TASKS}
-Although the proposed system demonstrates the basic working principle of an EEG based Brain Computer Interface, some tasks remain to be completed to make the system fully functional and reliable. These tasks are described below.
+\chapter{FUTURE ENHANCEMENTS}
 
-\section{Dual Rail Power Supply / Rail Splitting Circuit Design}
-The current implementation uses a single supply voltage for circuit testing. However, the analog front end components, especially the AD620 instrumentation amplifier and active filters, require a dual rail power supply for optimal performance.
+There are many ways this project can be improved in the future to make the BCI system more accurate, faster, and more useful. The current system works as a simple prototype, but it still has many limits in both hardware and signal processing. Future work can focus on improving the circuit design, increasing the number of input channels, using better classification methods, and making the typing interface more practical for real use.
 
-A dual rail power supply or rail splitting circuit needs to be designed to generate both positive and negative supply voltages from a single DC source. This will help in proper amplification of low level EEG signals, reduce signal distortion, and improve the overall signal quality.
+\section{Hardware Improvements}
 
-\section{Real Time Eye Blink Detection Using EEG Electrodes}
-At present, the system detects user focus by analyzing signals generated from a function generator, which does not represent real EEG data. Eye blink detection using actual EEG electrodes has not yet been implemented.
+One important future improvement would be to redesign the circuit on a proper PCB instead of using a matrix board. A PCB would help reduce noise, improve connection stability, and make the whole system more reliable. Better shielding and cleaner grounding could also be added to reduce outside interference from power lines and nearby electronics. The DRL circuit could also be improved by using adjustable gain with a potentiometer so that noise cancellation can be tuned more properly during testing. Better quality electrodes and improved electrode placement could also help capture cleaner EEG signals.
 
-As a remaining task, EEG electrodes will be used to acquire real time signals from the scalp, and eye blinks will be detected based on high amplitude artifacts present in the EEG signal. Threshold based detection methods will be implemented to accurately distinguish eye blinks from normal EEG activity, enabling real time user command selection.
+Another major hardware improvement would be to use more than one EEG channel. In the current system, blink and focus are both detected from the same channel, which makes them harder to separate. By adding more channels, the system could collect more information from different parts of the head, which would make signal classification more accurate. More channels would also allow the system to compare signals across electrodes instead of depending on only one path. This could help reduce confusion between blink, focus, and idle states and would allow more complex BCI commands to be added in the future.
 
-\section{Keyboard Interface Development Using Matplotlib}
-Currently, the system does not include a complete graphical keyboard interface for text entry. A virtual keyboard interface needs to be developed using Python and Matplotlib to allow alphabet selection and traversal.
+\section{Signal Processing Improvements}
 
-The keyboard interface will use the output of FFT based frequency analysis to determine the user’s mental state. Alpha wave activity will be used for traversal across alphabets, while eye blink detection will be used for selection. This interface will enable hands free text entry through EEG signals and complete the intended functionality of the BCI system.
+The signal processing part can also be improved in many ways. Better digital filtering methods could be used to reduce noise and remove unwanted artifacts more clearly. Since the current system mainly works in a limited frequency range, future versions could study more EEG bands and test which features are most useful for focus detection. Artifact removal methods could also be added to better handle eye movement noise, muscle activity, and power line interference. More advanced preprocessing would help make the signal cleaner before classification.
+
+Another good improvement would be to move some of the signal processing from Arduino to a more powerful platform such as a computer, Raspberry Pi, or stronger microcontroller. Since FFT and feature extraction done on Arduino have processing limits, a better processor could allow more accurate analysis and faster decision making. Higher sampling quality and better resolution would also help detect smaller changes in the EEG signal. This would improve both stability and response of the system.
+
+\section{Classification and Machine Learning Improvements}
+
+The current system appears to use a simple method for detecting blink and focus, but future versions could use machine learning for signal classification. For example, features such as signal amplitude, band power, energy, variance, or time-frequency information could be extracted and given to classifiers like support vector machines, k-nearest neighbors, decision trees, or neural networks. These methods may help the system learn patterns more effectively and improve the separation between blink, focus, and idle classes.
+
+Machine learning could also make the system more adaptive to different users. EEG signals are not the same for every person, so a model trained for one user may not work as well for another. A future system could include user-specific calibration and training so the classifier adjusts to the person using it. It could also use adaptive thresholds or online learning so that performance stays more stable across different sessions. This would make the BCI more realistic for long-term use.
+
+\section{Interface and functionality improvements}
+
+The typing interface itself can also be improved in future work. Right now, only a simple BCI can be made because the system detects only a small number of signals. With better classification and more channels, extra commands could be added, such as select, delete, move left, move right, confirm, or switch keyboard groups. This would make the typing system more flexible and easier to use. Predictive text or word suggestion could also be added to reduce the number of selections needed for typing.
+
+The user experience could also be improved by making the interface faster and easier to understand. Larger visual feedback, better cursor control, and clearer signal status indicators could help the user know what the system is detecting. A calibration page could also be added so the system adjusts itself before typing starts. These changes would make the BCI more comfortable and practical.
+
+\section{Testing and Research Improvements}
+
+Future work should also include more testing. The current results appear to come from a limited number of trials, so future versions should be tested across more sessions and with more users. This would help check whether the system works consistently and whether the results can be generalized. More trials would also make the performance metrics more trustworthy and allow stronger comparisons between different versions of the system.
+
+In future studies, it would also be useful to compare different filter designs, electrode placements, feature extraction methods, and classifiers. This would help find which combinations give the best performance. A future version of the project could also compare single-channel and multi-channel systems to show how much improvement is gained by using more electrodes. Overall, these enhancements would help turn the current simple prototype into a more accurate and practical EEG-based BCI system.
 
