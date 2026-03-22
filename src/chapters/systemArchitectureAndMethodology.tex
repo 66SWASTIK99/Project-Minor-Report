@@ -440,12 +440,3 @@ After applying the Fast Fourier Transform, the digitized EEG signal is converted
 Relevant frequency-domain features are extracted by analyzing power within predefined frequency bands. Eye blink activity is characterized by low-frequency, high-amplitude components, whereas focused mental states show increased power in higher frequency bands, particularly the beta band (approximately 13--30 Hz). The system computes band-wise power values, which serve as features for classification.
 
 These extracted features are compared with predefined threshold values within the microcontroller. If the blink-related frequency power exceeds the blink threshold, the system identifies the signal as a blink. Similarly, if the focus-related frequency power exceeds the focus threshold, the system detects a focused state. Based on this decision, appropriate control actions are generated: a blink command is used to traverse between keys, while a focus command is used to select the desired key.
-
-\chapter{EXPECTED OUTCOME}
-
-The expected outcome of this project is the successful development of a basic EEG-based brain--computer interface (BCI) typing or text selection system using eye blink detection and alpha wave analysis. The system is expected to reliably acquire EEG signals using low-cost electrodes and analog filtering circuits. Eye blinks should be clearly detected as intentional control events, while alpha wave activity should be measurable using FFT-based spectral analysis.
-
-The system is expected to operate in near real-time with minimal latency between EEG signal acquisition and user response. Proper use of band-pass and notch filters should significantly reduce noise, motion artifacts, and power-line interference, thereby improving overall signal quality. The eye blink detection mechanism should demonstrate acceptable accuracy and reliability with minimal false triggering, ensuring stable and consistent system performance.
-
-This project aims to demonstrate simple signal processing techniques and threshold-based decision logic to control a typing interface without reliance on complex machine learning or advanced classification methods. In addition, the project provides practical experience in EEG signal acquisition, analog filtering, digital signal processing, and system integration. Overall, the system serves as a functional proof of concept for low-cost BCI applications and fulfills educational objectives.
-
