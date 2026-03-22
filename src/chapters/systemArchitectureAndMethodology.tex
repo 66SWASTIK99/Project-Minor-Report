@@ -404,6 +404,13 @@ Thus:
 
 generates all required roots of unity efficiently without recomputing sine and cosine values.
 
+\begin{figure}[H]
+	\includegraphics[width=14cm]{src/images/figures/rotation.png}
+	\caption{Twiddle Factor Computation Under Unit Circle Rotation}
+	\label{twiddle}
+\end{figure}
+
+
 \section{Windowing -- Hann Window}
 
 When performing a Fourier transform, the signal taken for sampling is finite, with no guarantee of perfect start and end points of the waveform, which causes inaccuracies in frequency analysis. Due to this, spectral energy from high-energy frequencies spreads into neighboring frequencies. This phenomenon is known as spectral leakage.
