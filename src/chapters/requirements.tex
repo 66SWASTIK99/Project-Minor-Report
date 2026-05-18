@@ -36,7 +36,7 @@ The gain of AD620 can be easily adjusted using a single external resistor, which
 consumption, and stable performance, making it suitable for continuous EEG signal acquisition.
 
 By using the AD620 instrumentation amplifier, the small voltage difference between EEG electrodes is amplified accurately while rejecting common noise signals. This
-improves signal clarity and makes the EEG signal suitable for further filtering and processing in the Brain Computer Interface system.
+improves signal clarity and makes the EEG signal suitable for further filtering and processing in the Brain-Computer Interface system.
 
 \section{Types of Filters}
 Filters are used in the EEG system to remove unwanted noise and keep only the useful brain signals. EEG signals are very small and easily affected by noise such as power line interference, muscle movement, and other electrical disturbances. Therefore, filters are an important part of signal conditioning.
@@ -47,8 +47,6 @@ A low pass filter is used to remove high frequency noise such as muscle activity
 
 A high pass filter is used to remove very low frequency noise caused by body movement and baseline drift. This helps stabilize the signal and improves signal clarity.
 
-A notch filter is used to remove power line interference at 50 Hz. This is important because electrical noise from power supply lines can strongly affect EEG signals.
-
 In this project, simple analog filters are used because they are easy to design and suitable for low cost systems. These filters provide sufficient noise reduction for detecting eye blink and basic EEG frequency bands without using complex signal processing techniques.
 
 \section{Arduino Microcontroller}
@@ -57,9 +55,9 @@ Once the EEG signal is digitized, the microcontroller stores the sampled data in
 After detecting valid brain or eye blink commands, the microcontroller makes decisions based on predefined logic and generates appropriate output signals. These outputs may be used to control external devices such as a cursor, virtual keyboard, or indicator LEDs. Additionally, the microcontroller handles data communication with a computer or display module, enabling visualization and further analysis of EEG signals. Thus, the microcontroller plays a crucial role in data acquisition, signal processing, decision making, and system control in the BCI project.
 
 \section{FFT and MATLAB (Signal Processing and Visualization)}
-Fast Fourier Transform (FFT) is used in this project to convert EEG signals from the time domain to the frequency domain. Frequency domain analysis is required to identify and extract specific EEG frequency bands, particularly the alpha band (8–12 Hz), which is associated with relaxation and attention states.
+Fast Fourier Transform (FFT) is used in this project to convert EEG signals from the time domain to the frequency domain. Frequency domain analysis is required to identify and extract specific EEG frequency bands, particularly the beta band (12-30 Hz), which is associated with relaxation and attention states.
 
-The EEG data received from Arduino is processed in MATLAB, where FFT is applied to calculate the power spectral density of the signal. Based on the magnitude of alpha band activity, the system determines the user’s mental state.
+The EEG data received from Arduino is processed in MATLAB, where FFT is applied to calculate the power spectral density of the signal. Based on the magnitude of beta band activity, the system determines the user’s mental state.
 
 MATLAB plotting functions are used to visualize time domain EEG signals and frequency spectra, which helps in analyzing system performance and validating the effectiveness of signal processing techniques. MATLAB provides a flexible and efficient environment for implementing FFT and EEG data visualization.
 

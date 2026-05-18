@@ -5,22 +5,22 @@
 \begin{figure}[H]
 	\centering
 	\includegraphics[width = 14.5cm, height=19.5cm]{src/images/figures/system_architecture.png}
-\caption{System Block Diagram of the Brain Computer Typing Interface}
+\caption{System Block Diagram of the Brain-Computer Typing Interface}
 \label{system_block_diagram}
 \end{figure}
 
 \newpage
 \section{Description of Working Principle}
-The Brain Computer Interface (BCI) system detects, amplifies, filters, and interprets brain electrical activity to control external devices. Electrodes placed on the scalp capture EEG signals. The weak EEG signals are amplified using an Instrumentation Amplifier (AD620), which boosts the signal while rejecting noise. The amplified signals then pass through a Butterworth band pass filter, which isolates the desired frequency range and removes artifacts and muscle activity.
+The Brain-Computer Interface (BCI) system detects, amplifies, filters, and interprets brain electrical activity to control external devices. Electrodes placed on the scalp capture EEG signals. The weak EEG signals are amplified using an Instrumentation Amplifier (AD620), which boosts the signal while rejecting noise. The amplified signals then pass through a Butterworth band pass filter, which isolates the desired frequency range and removes artifacts and muscle activity.
 
 The filtered signals are converted to digital form using the Arduino’s ADC ports. Software algorithms analyze the signal frequencies to determine which visual stimulus the user is focusing on, allowing control of external devices.
 This system effectively translates brain activity into commands with high sensitivity, low noise, and minimal interference.
 
-More precisely, EEG electrodes are placed on the scalp at frontal and occipital regions to capture signals related to eye blinks and brain activity. A large voltage change appears in the EEG signal when the user performs an intentional eye blink. The proposed BCI typing system works by detecting eye blinks and changes in alpha wave activity from EEG signals to control a typing or selection interface but alpha wave activity varies depending on the user’s level of focus or relaxation and is mainly observed in the occipital region of the brain.
+More precisely, EEG electrodes are placed on the scalp at frontal and occipital regions to capture signals related to eye blinks and brain activity. A large voltage change appears in the EEG signal when the user performs an intentional eye blink. The proposed BCI typing system works by detecting eye blinks and changes in beta wave activity from EEG signals to control a typing or selection interface but beta wave activity varies depending on the user’s level of focus or relaxation and is mainly observed in the occipital region of the brain.
 
-The EEG signals collected from the electrodes are first amplified and conditioned using an analog front end circuit then these signals are passed through analog filters including high pass, low pass and notch filters, to remove unwanted noise, baseline drift and power line interference. Then the clean EEG signals are converted into digital form using an analog to digital converter.
+The EEG signals collected from the electrodes are first amplified and conditioned using an analog front end circuit then these signals are passed through analog filters including high pass and low pass to remove unwanted noise, baseline drift and power line interference. Then the clean EEG signals are converted into digital form using an analog to digital converter.
 
-In the digital stage, the system stores the sampled EEG data in short time windows. Eye blinks are detected directly from the time domain signal using amplitude thresholding techniques and based on predefined thresholds, the system determines whether the user is focused or relaxed. For alpha wave analysis, Fast Fourier Transform (FFT) is applied to the observed EEG data to calculate the power in the alpha frequency band (8–12 Hz). If blink and alpha states are detected then it is processed by a rule based decision logic, which translates them into typing or selection actions on the user interface.
+In the digital stage, the system stores the sampled EEG data in short time windows. Eye blinks are detected directly from the time domain signal using amplitude thresholding techniques and based on predefined thresholds, the system determines whether the user is focused or relaxed. For beta wave analysis, Fast Fourier Transform (FFT) is applied to the observed EEG data to calculate the power in the beta frequency band (12-30 Hz). If blink and beta states are detected then it is processed by a rule based decision logic, which translates them into typing or selection actions on the user interface.
 
 \newpage
 \section{Flowchart of Proposed System Architecture}
@@ -149,67 +149,6 @@ This flowchart illustrates the operation of the proposed EEG-based BCI system. T
 	\caption{Flowchart of Main Program Flow on Arduino}
 \end{figure}
 
-
-\section{CORDIC Algorithm}
-As we were implementing FFT algorithm, the need of using sine and cosine trigonometric function became inevitable. Using regular built-in library available is expensive for computation for our 16MHz Arduino micro-controller. So, we decided to adopt CORDIC algorithm to create our custom function which is tuned according to our need of accuracy trading off with the computation as accuracy is disposable since it is not our main concern.
-
-The CORDIC algorithm (COordinate Rotation DIgital Computer) is an efficient iterative method useful to compute various mathematical functions, especially trigonometric, hyperbolic, exponential, logarithmic functions, square roots, and vector rotations using only shift and add operations.
-
-
-The CORDIC (COordinate Rotation DIgital Computer) algorithm computes vector rotations using only iterative shift-and-add operations. 
-A vector $(x, y)$ is rotated by breaking the desired rotation into a sequence of smaller micro-rotations:
-
-\begin{equation}
-\theta_i = \tan^{-1}(2^{-i})
-\end{equation}
-
-Each iteration performs a rotation by $\pm \theta_i$, which can be implemented using only arithmetic shifts and additions.
-
-The standard rotation equations are:
-
-\begin{equation}
-	x' = x \cos\theta - y \sin\theta
-\end{equation}
-\begin{equation}
-	y' = x \sin\theta + y \cos\theta
-\end{equation}
-
-CORDIC rewrites these using the identity $\tan\theta \approx 2^{-i}$, allowing multiplication by powers of two to be replaced with bit shifts.
-
-The iterative update equations become:
-
-\begin{align}
-	x_{i+1} &= x_i - d_i \cdot y_i \cdot 2^{-i} \\
-	y_{i+1} &= y_i + d_i \cdot x_i \cdot 2^{-i} \\
-	z_{i+1} &= z_i - d_i \cdot \tan^{-1}(2^{-i})
-\end{align}
-where $d_i \in \{-1, +1\}$ determines the direction of rotation.
-
-\subsection{Scaling Factor}
-
-Each micro-rotation introduces a scaling effect on the vector magnitude. After $n$ iterations, the accumulated scale factor is:
-
-\begin{equation}
-K_n = \prod_{i=0}^{n-1} \frac{1}{\sqrt{1 + 2^{-2i}}}
-\end{equation}
-
-Thus, the true magnitude must be corrected as:
-
-\begin{equation}
-\begin{bmatrix}
-	x_{\text{final}} \\
-	y_{\text{final}}
-\end{bmatrix}
-=
-K_n
-\begin{bmatrix}
-	x_n \\
-	y_n
-\end{bmatrix}
-\end{equation}
-
-where $K_n$ is typically precomputed for a given number of iterations.
-
 \section{EEG Electrode Placement and Signal Acquisition}
 The human brain consists of billions of neurons that communicate with each other using electrical impulses. When a group of neurons becomes active simultaneously such as during thinking, eye blinking, or movement small electrical potentials are generated due to ionic current flow across neuronal cell membranes. These electrical activities create voltage fluctuations that spread through the brain tissues, skull, and scalp.
 
@@ -224,7 +163,7 @@ In our system, the AD620 instrumentation amplifier operates by amplifying the di
 
 Inside the AD620, the input stage consists of two matched input amplifiers with very high input impedance. This prevents current from being drawn from the electrodes, ensuring that the extremely weak EEG signals are not distorted or attenuated. These two input amplifiers amplify the incoming signals equally, preserving the small voltage difference generated by brain activity.
 
-The core principle of the AD620 is differential amplification. The amplifier subtracts the voltage at one input from the other and then amplifies only this difference. As a result, signals that are common to both inputs such as 50 Hz power line noise are effectively cancelled due to the AD620’s high Common Mode Rejection Ratio (CMRR), while the EEG signal is amplified.
+The core principle of the AD620 is differential amplification. The amplifier subtracts the voltage at one input from the other and then amplifies only this difference. As a result, signals that are common to both inputs such as 50 Hz power line noise are effectively canceled due to the AD620’s high Common Mode Rejection Ratio (CMRR), while the EEG signal is amplified.
 
 The gain of the AD620 is set using a single resistor (Rg) connected between the inverting terminal. This resistor controls how much the tiny EEG voltage (typically in microvolts) is amplified to a level suitable for further processing. In our BCI project, the gain is chosen so that the EEG signal is amplified without saturation while still being large enough for filtering and ADC conversion.
 
@@ -238,39 +177,22 @@ $$G = \frac{2x\SI{24.7}{\kilo\ohm}}{R_g} + 1$$
 	R_g = \frac{\SI{49.4}{\kilo\ohm}}{G-1}
 \end{equation}
 
-Finally, the amplified output signal from the AD620 is referenced to a stable reference ground voltage and sent to the next stage band pass filter and notch filter, before entering the microcontroller’s ADC. In this way, the AD620 acts as the first and most critical signal conditioning stage, ensuring that clean, amplified EEG signals are available for reliable blink detection and FFT analysis.
+Finally, the amplified output signal from the AD620 is referenced to a stable reference ground voltage and sent to the next stage band pass filter, before entering the microcontroller’s ADC. In this way, the AD620 acts as the first and most critical signal conditioning stage, ensuring that clean, amplified EEG signals are available for reliable blink detection and FFT analysis.
 
 \section{Filter Design and Signal Conditioning}
-\subsection{Bandpass filter}
-In our project, the band pass filter is used to isolate the useful EEG frequency components while removing unwanted low frequency drift and high frequency noise. After the EEG signal is amplified by the AD620 instrumentation amplifier, it still contains various undesired components such as DC offset, baseline drift, muscle noise (EMG), and high frequency electrical interference. The bandpass filter is therefore applied as the next signal conditioning stage.
+\subsection{Band-Pass filter}
+In our project, the band pass filter is used to isolate the useful EEG frequency components while removing unwanted low frequency drift and high frequency noise. After the EEG signal is amplified by the AD620 instrumentation amplifier, it still contains various undesired components such as DC offset, baseline drift, muscle noise (EMG), and high frequency electrical interference. The band-pass filter is therefore applied as the next signal conditioning stage.
 
 The band pass filter operates by allowing only a specific range of frequencies to pass through while attenuating frequencies outside this range. In our project, the lower cutoff frequency is chosen to remove very low frequency components such as electrode drift and motion artifacts, while the upper cutoff frequency is selected to suppress high frequency noise such as muscle activity and electronic noise. As a result, only EEG related frequency components particularly those associated with eye blinks and brain activity are preserved.
 
 Practically, the bandpass filter is implemented by cascading a highpass filter and a low pass filter. The high pass filter blocks DC and very slow variations, whereas the low pass filter blocks fast, unwanted fluctuations. Together, they ensure that the amplified EEG signal lies within a clean and controlled frequency band suitable for digitization. This filtered signal is then fed into the microcontroller’s ADC for sampling.
 
-We used a 6th order Butterworth band pass filter with a passband of 10–35 Hz to effectively isolate EEG components relevant to eye blink and intentional brain activity while suppressing noise. The 10 Hz lower cutoff removes low frequency artifacts such as baseline drift, electrode motion, and DC offset. The 35 Hz upper cutoff eliminates high frequency noise, including muscle (EMG) activity and electronic interference. A Butterworth filter is chosen because it provides a maximally flat response in the passband, preserving EEG signal shape. The 6th order ensures a steep roll off, giving better noise rejection and cleaner signals for accurate FFT analysis and blink detection.pass filter, the system ensures that the microcontroller processes only meaningful EEG data, improving the accuracy of eye blink detection and FFT based frequency analysis. This filtering stage reduces computational load, prevents ADC saturation, and enhances the overall reliability of the BCI system.
+We used a 6th order Butterworth band pass filter with a pass-band of 10–35 Hz to effectively isolate EEG components relevant to eye blink and intentional brain activity while suppressing noise. The 10 Hz lower cutoff removes low frequency artifacts such as baseline drift, electrode motion, and DC offset. The 35 Hz upper cutoff eliminates high frequency noise, including muscle (EMG) activity and electronic interference. A Butterworth filter is chosen because it provides a maximally flat response in the passband, preserving EEG signal shape. The 6th order ensures a steep roll off, giving better noise rejection and cleaner signals for accurate FFT analysis and blink detection.pass filter, the system ensures that the microcontroller processes only meaningful EEG data, improving the accuracy of eye blink detection and FFT based frequency analysis. This filtering stage reduces computational load, prevents ADC saturation, and enhances the overall reliability of the BCI system.
 
 \begin{figure}[H]
 	\includegraphics[width=14cm]{src/images/figures/6th_butterworth.png}
 	\caption{6th-order Butterworth band pass filter’s frequency response}
 	\label{bandpass}
-\end{figure}
-
-\subsection{Notch Filter}
-In our EEG based BCI project, a notch filter is used to remove power line interference, which appears as a strong sinusoidal noise at 50 Hz (in Nepal). This interference is picked up by the EEG electrodes due to electromagnetic coupling from 
-nearby electrical equipment and wiring.
- 
-The notch filter is designed with a very narrow stopband centered at 50 Hz. It works by strongly attenuating signals at this specific frequency while allowing all other frequencies to pass with minimal effect. When the amplified EEG signal passes 
-through the notch filter, the 50 Hz component is significantly reduced, while the useful EEG frequencies remain intact. 
-
-By eliminating power line noise, the notch filter improves signal clarity and prevents 
-false peaks in FFT analysis, leading to more accurate eye blink detection and reliable 
-BCI performance.
-
-\begin{figure}[H]
-	\includegraphics[width=14cm]{src/images/figures/50hz_notch.png}
-	\caption{50 Hz Notch Filter frequency response}
-	\label{notch}
 \end{figure}
 
 \section{Microcontroller Based Data Acquisition and Communication}
@@ -283,15 +205,15 @@ After the EEG signal is amplified and filtered, it is still an analog signal, me
 processing algorithms (like FFT) can only work with digital data. Therefore, the signal must be converted from analog to digital, which is done using an Analog to Digital Converter (ADC). 
 
 The filtered EEG signal (in microvolts, now amplified to millivolts/volts) is fed to the ADC input of the microcontroller. The ADC samples the EEG signal at a fixed 
-sampling frequency (e.g., 250 Hz or 500 Hz), which is sufficient to capture EEG frequencies (0.5 – 40 Hz). Instead of a continuous waveform, we now have discrete time voltage values. 
+sampling frequency (e.g., 256 Hz or 512 Hz), which is sufficient to capture EEG frequencies (0.5 – 40 Hz). Instead of a continuous waveform, we now have discrete time voltage values. 
 
-The ADC used by our microcontroller is Successive Approximation ADC. SAR ADC is a type of analog to digital converter that converges digital value towards input signal after every iteration by binary search. Here the search is done by comparing the current digital value in register with input value via DAC and makes a decision to step up or step down the digital value depending on the result of comparision. The digital value is updated from most significant bit to least significant bit. 
+The ADC used by our microcontroller is Successive Approximation Register(SAR) ADC. SAR ADC is a type of analog to digital converter that converges digital value towards input signal after every iteration by binary search. Here the search is done by comparing the current digital value in register with input value via DAC and makes a decision to step up or step down the digital value depending on the result of comparision. The digital value is updated from most significant bit to least significant bit. 
 
 \begin{figure}[H]
 	\centering
 	\includegraphics[width = 13.5cm, height=7.5cm]{src/images/figures/sar3.png}
-\caption{Flowchart of Proposed System Architecture}
-\label{SAR}
+\caption{Successive Approximation Register(SAR) ADC}
+\label{Successive Approximation Register(SAR) ADC}
 \end{figure}
 
 \section{Arduino Timer Specifications}
@@ -364,7 +286,67 @@ x[n]:  n-th sample\\
 
 The Fast Fourier Transform (FFT) is not a different transform but an efficient algorithm used to compute the Discrete Fourier Transform (DFT). FFT exploits the symmetry and periodicity properties of the DFT to reduce the number of calculations. Using FFT, the computational complexity is reduced from $O(N^2)$ to $O(N \log N)$, making it much faster and suitable for real-time signal processing applications such as EEG, ECG, image processing, and communication systems.
 
-FFT computes frequency components efficiently with a computational complexity of $O(N \log N)$, making it suitable for real-time EEG processing. The magnitude of the FFT output, $|X[k]|$ or the power spectrum $|X[k]|^2$, indicates the strength of each frequency component present in the EEG signal. By analyzing the power distribution across frequency bands such as the alpha frequency band (8-13 Hz), the presence and intensity of specific brain rhythms can be identified. Thus, FFT transforms the time-domain EEG signal into a frequency-domain representation, enabling reliable detection and analysis of brain activity patterns that are essential for EEG based signal processing.
+FFT computes frequency components efficiently with a computational complexity of $O(N \log N)$, making it suitable for real-time EEG processing. The magnitude of the FFT output, $|X[k]|$ or the power spectrum $|X[k]|^2$, indicates the strength of each frequency component present in the EEG signal. By analyzing the power distribution across frequency bands such as the beta frequency band (12-30 Hz), the presence and intensity of specific brain rhythms can be identified. Thus, FFT transforms the time-domain EEG signal into a frequency-domain representation, enabling reliable detection and analysis of brain activity patterns that are essential for EEG based signal processing.
+
+\section{CORDIC Algorithm}
+As we were implementing FFT algorithm, the need of using sine and cosine trigonometric function became inevitable. Using regular built-in library available is expensive for computation for our 16MHz Arduino micro-controller. So, we decided to adopt CORDIC algorithm to create our custom function which is tuned according to our need of accuracy trading off with the computation as accuracy is disposable since it is not our main concern.
+
+The CORDIC algorithm (COordinate Rotation DIgital Computer) is an efficient iterative method useful to compute various mathematical functions, especially trigonometric, hyperbolic, exponential, logarithmic functions, square roots, and vector rotations using only shift and add operations.
+
+
+The CORDIC (COordinate Rotation DIgital Computer) algorithm computes vector rotations using only iterative shift-and-add operations. 
+A vector $(x, y)$ is rotated by breaking the desired rotation into a sequence of smaller micro-rotations:
+
+\begin{equation}
+	\theta_i = \tan^{-1}(2^{-i})
+\end{equation}
+
+Each iteration performs a rotation by $\pm \theta_i$, which can be implemented using only arithmetic shifts and additions.
+
+The standard rotation equations are:
+
+\begin{equation}
+	x' = x \cos\theta - y \sin\theta
+\end{equation}
+\begin{equation}
+	y' = x \sin\theta + y \cos\theta
+\end{equation}
+
+CORDIC rewrites these using the identity $\tan\theta \approx 2^{-i}$, allowing multiplication by powers of two to be replaced with bit shifts.
+
+The iterative update equations become:
+
+\begin{align}
+	x_{i+1} &= x_i - d_i \cdot y_i \cdot 2^{-i} \\
+	y_{i+1} &= y_i + d_i \cdot x_i \cdot 2^{-i} \\
+	z_{i+1} &= z_i - d_i \cdot \tan^{-1}(2^{-i})
+\end{align}
+where $d_i \in \{-1, +1\}$ determines the direction of rotation.
+
+\subsection{Scaling Factor}
+
+Each micro-rotation introduces a scaling effect on the vector magnitude. After $n$ iterations, the accumulated scale factor is:
+
+\begin{equation}
+	K_n = \prod_{i=0}^{n-1} \frac{1}{\sqrt{1 + 2^{-2i}}}
+\end{equation}
+
+Thus, the true magnitude must be corrected as:
+
+\begin{equation}
+	\begin{bmatrix}
+		x_{\text{final}} \\
+		y_{\text{final}}
+	\end{bmatrix}
+	=
+	K_n
+	\begin{bmatrix}
+		x_n \\
+		y_n
+	\end{bmatrix}
+\end{equation}
+
+where $K_n$ is typically precomputed for a given number of iterations.
 
 \section{Twiddle Factor Computation Under Recurrence}
 Twiddle factors in the Fast Fourier Transform (FFT) are defined as:

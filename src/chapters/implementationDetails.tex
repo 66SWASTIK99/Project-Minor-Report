@@ -1,5 +1,5 @@
 \chapter{IMPLEMENTATION DETAILS}
-\section{Hardware Components and Their Functioning}
+\section{Hardware Components}
 \subsection{EEG Electrodes}
 EEG electrodes work on the principle of biopotential sensing. When neurons in the brain communicate, they generate tiny electrical potentials due to ionic movement across neuronal membranes. These potentials propagate through brain tissue, skull, and scalp, where they can be detected as voltage differences.
 
@@ -218,13 +218,13 @@ In this project, Timer1 (a 16-bit timer) is configured in CTC mode to generate i
 \noindent The corresponding ISR reads the analog input and stores it in a double buffer for further processing:
 
 \subsection{Interconnection of Hardware Components}
-All hardware components are interconnected to form a complete EEG based BCI system. EEG electrodes capture brain signals and eye blink activity, which are amplified using the AD620 instrumentation amplifier. The amplified signals are passed through bandpass and notch filters to remove noise and isolate relevant EEG frequency bands.
+All hardware components are interconnected to form a complete EEG based BCI system. EEG electrodes capture brain signals and eye blink activity, which are amplified using the AD620 instrumentation amplifier. The amplified signals are passed through bandpass to remove noise and isolate relevant EEG frequency bands.
 
 The conditioned signal is then digitized by the Arduino microcontroller using its ADC. The digital data is transmitted to MATLAB via serial communication. MATLAB processes the signal using FFT and time domain analysis to detect eye blinks and brain wave activity. Based on predefined thresholds and rule based logic, control commands are generated and mapped to a simple text entry interface.
 
-This integrated hardware–software system demonstrates a low cost, efficient, and educational implementation of a Brain Computer Interface.
+This integrated hardware–software system demonstrates a low cost, efficient, and educational implementation of a Brain-Computer Interface.
 
-\section{Software Components and Their Functioning}
+\section{Software Components}
 \subsection{Arduino Firmware}
 The Arduino firmware acts as the data acquisition and communication layer of the system. Its primary role is to continuously read the conditioned EEG signal from the analog input pin using the built in Analog to Digital Converter (ADC) and transmit this data to the computer for further processing.
 
@@ -249,9 +249,9 @@ Initially, the received EEG samples are plotted in the time domain using Matplot
 
 For brain wave analysis, the EEG signal is divided into short time windows of fixed length. Before applying the Fast Fourier Transform (FFT), a Hann window is applied to each segment to minimize spectral leakage and improve frequency resolution. The FFT is then computed using NumPy/SciPy functions to convert the EEG signal from the time domain to the frequency domain, enabling detailed frequency band analysis.
 
-In this project, particular emphasis is placed on the alpha frequency band (8–12 Hz). The Python program calculates the spectral power within this band and compares it with predefined threshold values to estimate the user’s mental state, such as relaxed or focused condition.
+In this project, particular emphasis is placed on the beta frequency band (12-30 Hz). The Python program calculates the spectral power within this band and compares it with predefined threshold values to estimate the user’s mental state, such as relaxed or focused condition.
 
-Based on the extracted features, eye blink detection is used as a control or selection mechanism, while alpha wave dominance acts as a decision parameter. A rule based decision logic combines these detections to generate control commands for the text entry or selection interface. The processed results and signal plots are displayed using Matplotlib, demonstrating a hands free human computer interaction system driven by brain signals.
+Based on the extracted features, eye blink detection is used as a control or selection mechanism, while beta wave dominance acts as a decision parameter. A rule based decision logic combines these detections to generate control commands for the text entry or selection interface. The processed results and signal plots are displayed using Matplotlib, demonstrating a hands free human computer interaction system driven by brain signals.
 
 
 
@@ -276,7 +276,6 @@ Based on the extracted features, eye blink detection is used as a control or sel
 \subsection{Filter Calibration}
 \begin{itemize}
 	\item Cutoff frequencies of high pass and low pass filters are verified
-	\item Notch filter is tuned precisely at 50~Hz
 	\item Frequency response is tested using signal generators
 \end{itemize}
 
