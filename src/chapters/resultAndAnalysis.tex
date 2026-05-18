@@ -1,8 +1,8 @@
 \chapter{RESULTS AND ANALYSIS}
 
 \section{EEG Signal Acquisition Result}
-Low-amplitude signals in the microvolt range were applied at the input of the instrumentation amplifier to simulate EEG signals. The AD620 based instrumentation amplifier successfully amplified the input signal without significant distortion. The amplified signal was observed to be stable and suitable for further processing through the filtering stages.
-The result confirms that the amplification stage is capable of handling low-level biopotential signals, which is essential for EEG signal acquisition.
+Signals with lower amplitudes in the microvolt level were fed to the input of the instrumentation amplifier in order to simulate EEG signals. The signal at the output of the instrumentation amplifier designed using the AD620 showed no signs of distortion. The output signal proved to be stable enough to be processed in the next steps.
+Thus, the amplification stage has shown itself to be effective enough to amplify low-level biopotential signals.
 
 \section{High Pass Filter}
  
@@ -29,9 +29,9 @@ The result confirms that the amplification stage is capable of handling low-leve
 The filtered signal showed significant reduction in noise components, resulting in a cleaner waveform suitable for frequency analysis.
 
 \section{Frequency Domain Analysis Using FFT}
-Fast Fourier Transform (FFT) was applied to the filtered signal to convert it from the time domain to the frequency domain. The FFT output clearly displayed dominant frequency components corresponding to the input signal from the function generator.
+FFT was used on the filtered signal in order to transform the signal from the time domain into the frequency domain. The FFT result showed prominent frequency peaks representing the frequency of the input signal from the function generator.
 
-When the input signal frequency was set within the beta band range (12-30 Hz), a noticeable peak was observed in the FFT spectrum within this frequency range. This confirms that the system is capable of identifying specific EEG frequency bands using frequency domain analysis.
+Upon setting the input signal frequency in the beta band range (12-30 Hz), a pronounced peak was seen in the FFT graph in the beta band range. This proves that the system can detect certain EEG frequency bands using frequency domain analysis.
 
 \section{Confusion Matrix}
 \begin{figure}[H]
@@ -40,11 +40,10 @@ When the input signal frequency was set within the beta band range (12-30 Hz), a
 	\label{confusion}
 \end{figure}
 
-This confusion matrix was used to study how well the single-channel EEG BCI typing system could separate three states: blink, focus, and idle. The rows show the true class, while the columns show the class predicted by the system. The values on the diagonal are the correct predictions. The system correctly identified 16 blink trials, 15 focus trials, and 20 idle trials out of 25 trials for each class. This gives an overall accuracy of 68\%. These results show that the system was able to detect user intention at a basic level, but the performance was not equally strong for all three classes.
+This confusion matrix was used to analyze the classification ability of single-channel EEG-based BCI typing system in distinguishing three states: blink, focus and idle. Rows correspond to the actual classes, whereas columns denote the classes assigned by the system. The numbers along the diagonal represent the correct classifications. In other words, the system identified 16 blinks, 15 focuses and 20 idles out of 25 trials of each class respectively. Thus, the total accuracy equals to 68\%. These results prove that the system is capable of detecting user intentions at the most general level. Nevertheless, it should be noted that the performance was different for each particular class.
 
-The main pattern seen in the matrix is the confusion between blink and focus. Blink was predicted as focus 7 times, and focus was predicted as blink 6 times. This was the largest source of error in the system. One reason for this is that both blink and focus were measured from the same EEG channel. Because only one channel was used, the system had limited information to separate these two states clearly. A blink often creates a strong signal change, but focus can also change the signal, especially when the user slightly moves the eyes, changes forehead tension, or produces small muscle activity while concentrating. Because of this, the system could often tell that some intentional activity was present, but it could not always decide whether that activity came from blink or focus.
+One may observe the main issue represented in the confusion matrix, namely the confusion between blink and focus. More specifically, there were 7 cases when blink was identified as focus and 6 cases when focus was confused with blink. In other words, these types of mistakes comprised the major source of errors in the system. One of the reasons behind this problem was that blink and focus were measured from the same channel of EEG. The fact that only one channel was used made it rather difficult to distinguish between two types of activity. A blink usually causes significant signal shift, however, focus may also lead to such changes, particularly if the user makes some slight movements with eyes, changes forehead tension and produces muscular activity while concentrating. Consequently, the system managed to understand that some intentional activity occurred, but failed to determine whether it was blink or focus.
 
-The idle class showed the best result, with 20 correct predictions. This is likely because idle periods are more stable and closer to the normal baseline signal. Even so, a few idle trials were still classified as blink or focus, which may have happened because of noise, small unwanted eye movements, or changes in the signal that were not related to a real command. Focus had the weakest result, which is also reasonable because focus is harder to measure than blink. Blink is a short and clear event, while focus is a mental state that changes slowly and may not look the same in every trial. Overall, the confusion matrix suggests that the system is working, but the main challenge is separating blink and focus correctly when both are taken from a single EEG channel.
-
+As for the results achieved for the idle class, they were rather good, i.e. 20 correct identifications out of 25. This may be explained by the fact that idle state is more stable and close to the baseline signal than other two types of activity. Nevertheless, several cases of incorrect classification were also observed for this type. They might be caused by noise, unintentional movements of eyes and some signal shifts which had nothing in common with any commands. As for the worst results obtained for focus, they are quite understandable. It is much easier to identify blink than focus since blink lasts for a rather short period, whereas focus refers to some kind of mental state changing very slowly.
 
 

@@ -6,7 +6,7 @@ Biopotential electrodes are used to measure small electrical signals produced in
 
 Biopotential electrodes are mainly divided into two types: wet electrodes and dry electrodes. Wet EEG electrodes are usually small cup shaped electrodes filled with conductive gel. The gel helps the electrode make good contact with the scalp, even through hair. Dry electrodes do not use gel. Instead, they have small teeth like structures that pass through the hair and touch the scalp directly.
 
-Wet electrodes becomes uncomfortable if used for a long time as gel dries out and needs to be cleaned properly. When the gel dries, the signal quality becomes poor and the skin may feel irritated. Dry electrodes are generally more comfortable and easier to use because they do not require gel. However, they are more affected by body movement and usually have higher resistance between the skin and the electrode \cite{saab2011drywet}.
+The problem with wet electrodes is that the gel can dry out affecting the signal quality and and it also causes skin irritaiton in some patients. Dry electrodes are generally more comfortable and easier to use because they do not require gel. However, they are more affected by body movement and usually have higher resistance between the skin and the electrode \cite{saab2011drywet}.
 
 \begin{figure}[htbp]
 	\centering
@@ -38,25 +38,24 @@ By using the AD620 instrumentation amplifier, the small voltage difference betwe
 improves signal clarity and makes the EEG signal suitable for further filtering and processing in the Brain-Computer Interface system.
 
 \section{Types of Filters}
-Filters are used in the EEG system to remove unwanted noise and keep only the useful brain signals. EEG signals are very small and easily affected by noise such as power line interference, muscle movement, and other electrical disturbances. Therefore, filters are an important part of signal conditioning.
+The role of filters in the EEG system is to remove noise and only allow the desired signals to be detected. The signals in the EEG are quite weak and susceptible to any noise. Some of the noises that can affect the EEG signals include power line interference and muscle movements among others. Therefore, the use of filters in signal conditioning is quite crucial.
 
-In this project, a band pass filter is used. The band pass filter allows only the required EEG frequency range to pass while blocking very low and very high frequencies. This helps remove slow drift noise and high frequency noise from the signal.
+Band pass filter is one of the filters used in the current project. In the case of band pass filter, only the required frequency of the EEG is allowed to pass through the filter. It eliminates slow drift and high frequency noises from the signal.
 
-A low pass filter is used to remove high frequency noise such as muscle activity and external electrical interference. This makes the EEG signal smoother and easier to analyze.
+Low pass filter is used to eliminate high frequency noise. The high frequency noise includes muscle activity and external electrical interference.
 
-A high pass filter is used to remove very low frequency noise caused by body movement and baseline drift. This helps stabilize the signal and improves signal clarity.
+High pass filter is employed in order to get rid of very low frequency noise. These kinds of noises include body movements and baseline drift.
 
-In this project, simple analog filters are used because they are easy to design and suitable for low cost systems. These filters provide sufficient noise reduction for detecting eye blink and basic EEG frequency bands without using complex signal processing techniques.
+In the current project, simple analog filters are used. They are simple to design and therefore suitable for low cost systems. They eliminate enough noise in order to detect eye blink and basic EEG frequencies.
 
 \section{Arduino Microcontroller}
-Once the EEG signal is digitized, the microcontroller stores the sampled data in memory and processes it in short time windows. Basic signal processing operations such as amplitude thresholding are applied in the time domain to detect eye blink events. For frequency domain analysis, the microcontroller executes the Fast Fourier Transform (FFT) algorithm on the digital EEG data to analyze the spectral content of the signal. Since eye blinks produce strong low frequency components, the microcontroller identifies these patterns by examining the FFT output or power spectrum.
+When the signal from the electrodes is converted into digital form, the microcontroller takes the samples and processes them within small time intervals. The initial signal processing functions such as amplitude thresholding are performed in the time domain. In order to perform frequency domain analysis, the microcontroller applies Fast Fourier Transform (FFT) algorithm on the digital EEG signal. As the result of the FFT analysis, the microcontroller detects eye blinks because eye blinks produce low frequencies.
 
-After detecting valid brain or eye blink commands, the microcontroller makes decisions based on predefined logic and generates appropriate output signals. These outputs may be used to control external devices such as a cursor, virtual keyboard, or indicator LEDs. Additionally, the microcontroller handles data communication with a computer or display module, enabling visualization and further analysis of EEG signals. Thus, the microcontroller plays a crucial role in data acquisition, signal processing, decision making, and system control in the BCI project.
+In case of receiving valid brain or eye blink commands, the microcontroller uses predefined algorithms to make decisions and produces corresponding output signals. The outputs generated by the microcontroller can be used to control external devices like a cursor, virtual keyboard, or LED lights. Moreover, the microcontroller manages data communication between a computer or display device and the microcontroller. Therefore, the microcontroller is responsible for performing data acquisition, signal processing, decision making, and controlling devices within the BCI project.
 
 \section{FFT and MATLAB (Signal Processing and Visualization)}
-Fast Fourier Transform (FFT) is used in this project to convert EEG signals from the time domain to the frequency domain. Frequency domain analysis is required to identify and extract specific EEG frequency bands, particularly the beta band (12-30 Hz), which is associated with relaxation and attention states.
+Fast Fourier Transform (FFT) is adopted in this work to transform the input EEG signal from time domain to frequency domain since frequency domain analysis is necessary to distinguish and extract certain frequency bands in the EEG signal, especially the beta band (12-30 Hz) that is related to relaxation and attention.
 
-The EEG data received from Arduino is processed in MATLAB, where FFT is applied to calculate the power spectral density of the signal. Based on the magnitude of beta band activity, the system determines the user’s mental state.
+EEG signals obtained from Arduino are analyzed in MATLAB in which FFT is implemented to compute the power spectral density of the input signal. Depending on the strength of the beta band in the EEG signals, the mental state of the user can be determined.
 
-MATLAB plotting functions are used to visualize time domain EEG signals and frequency spectra, which helps in analyzing system performance and validating the effectiveness of signal processing techniques. MATLAB provides a flexible and efficient environment for implementing FFT and EEG data visualization.
-
+MATLAB plotting tools can be used to plot the time domain signal as well as the frequency spectrum of the input EEG signals. This will facilitate performance analysis and validation of the implemented signal processing techniques.
